@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
 
     // Only attempt email send if API key is configured
     if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "re_placeholder") {
-      const fromEmail = process.env.NOTIFICATION_EMAIL_FROM || "notifications@xcglobalhq.com";
-      const toEmail = process.env.NOTIFICATION_EMAIL_TO || "admin@xcglobalhq.com";
+      const fromEmail = process.env.NOTIFICATION_EMAIL_FROM || "hello@xcglobalhq.com";
+      const toEmail = process.env.NOTIFICATION_EMAIL_TO || "xcglobalproject@gmail.com";
 
       await resend.emails.send({
         from: fromEmail.includes("<") ? fromEmail : `XC Global <${fromEmail}>`,

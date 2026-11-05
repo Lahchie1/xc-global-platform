@@ -61,8 +61,8 @@ export async function POST(request: Request) {
     if (resendApiKey && !resendApiKey.includes("placeholder")) {
       try {
         const resend = new Resend(resendApiKey);
-        const fromEmail = process.env.NOTIFICATION_EMAIL_FROM || "onboarding@xcglobalhq.com";
-        const toEmail = process.env.NOTIFICATION_EMAIL_TO || "admin@xcglobalhq.com";
+        const fromEmail = process.env.NOTIFICATION_EMAIL_FROM || "hello@xcglobalhq.com";
+        const toEmail = process.env.NOTIFICATION_EMAIL_TO || "xcglobalproject@gmail.com";
 
         await resend.emails.send({
           from: fromEmail.includes("<") ? fromEmail : `XC Global <${fromEmail}>`,
