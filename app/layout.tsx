@@ -44,6 +44,13 @@ export const metadata: Metadata = {
     site: "@xcglobalhq",
   },
   metadataBase: new URL("https://xcglobalhq.com"),
+  icons: {
+    icon: [
+      { url: "/brand/logomark-dark.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/brand/logomark-dark.svg",
+    apple: "/brand/logomark-dark.svg",
+  },
   robots: {
     index: true,
     follow: true,
