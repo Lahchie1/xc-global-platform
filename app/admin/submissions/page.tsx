@@ -182,7 +182,7 @@ export default function AdminSubmissionsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Submissions List */}
         <div className="lg:col-span-7 bg-surface-white rounded-2xl border border-border shadow-card overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center justify-between text-xs text-text-muted font-bold uppercase tracking-wider">
+          <div className="px-6 py-4 bg-surface-container-low/40 border-b border-border flex items-center justify-between text-[11px] text-text-muted font-bold uppercase tracking-wider">
             <span>Company & Contact</span>
             <span>Status</span>
           </div>
@@ -192,28 +192,31 @@ export default function AdminSubmissionsPage() {
               <div
                 key={item.id}
                 onClick={() => setSelectedId(item.id)}
-                className={`p-4.5 cursor-pointer transition-colors flex items-center justify-between gap-4 ${
+                className={`px-6 py-5 cursor-pointer transition-all flex items-center justify-between gap-6 group relative ${
                   selectedId === item.id
-                    ? "bg-surface-container-low border-l-4 border-l-primary"
-                    : "hover:bg-surface-container-low/50"
+                    ? "bg-surface-container-low/70 border-l-4 border-l-primary pl-5"
+                    : "hover:bg-surface-container-low/40 border-l-4 border-l-transparent pl-5"
                 }`}
               >
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-text-primary">
+                <div className="space-y-1.5 flex-1 min-w-0">
+                  <h4 className="text-sm font-bold text-text-primary tracking-tight group-hover:text-primary transition-colors">
                     {item.company_name}
                   </h4>
-                  <p className="text-xs text-text-muted">
-                    {item.contact_name} ({item.contact_email})
+                  <p className="text-xs text-text-secondary truncate">
+                    <span className="font-medium text-text-primary">{item.contact_name}</span>{" "}
+                    <span className="text-text-muted">({item.contact_email})</span>
                   </p>
-                  <div className="flex items-center gap-2 text-[11px] text-text-muted pt-0.5">
-                    <span>{item.industry}</span>
-                    <span>•</span>
-                    <span>{item.company_size}</span>
+                  <div className="flex items-center gap-2 text-xs text-text-muted pt-0.5">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded bg-surface-container-low border border-border/70 text-[11px] font-medium text-text-secondary">
+                      {item.industry}
+                    </span>
+                    <span className="text-text-muted/60">•</span>
+                    <span className="text-[11px]">{item.company_size}</span>
                   </div>
                 </div>
 
                 <span
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                  className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider shrink-0 text-center min-w-[92px] ${
                     item.status === "accepted"
                       ? "bg-status-success/10 text-status-success"
                       : item.status === "reviewed"
