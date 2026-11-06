@@ -52,6 +52,7 @@ export default function AboutPage() {
     { name: "ZendWallet", url: "https://zendwallet.com/" },
     { name: "Ori Lifestyle", url: "https://orilifestyle.com/" },
     { name: "VitalSwap", url: "https://www.vitalswap.com/" },
+    { name: "Altisure Insurance Brokers", url: "https://altisure.com/" },
     { name: "Currency Options", url: "https://currencyoptions.ca/" },
     { name: "Apothékary", url: "https://www.apothekary.com/" },
     { name: "Seller Africa", url: "https://sellerafrica.com/" },

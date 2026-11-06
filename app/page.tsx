@@ -117,14 +117,15 @@ export default function HomePage() {
 
               <div className="flex flex-wrap gap-2.5 items-center">
                 {[
-                  { name: "ZendWallet", sector: "Fintech", url: "https://zendwallet.com/" },
+                  { name: "ZendWallet", sector: "Fintech/Web3", url: "https://zendwallet.com/" },
                   { name: "Ori Lifestyle", sector: "E-commerce", url: "https://orilifestyle.com/" },
-                  { name: "VitalSwap", sector: "HealthTech", url: "https://www.vitalswap.com/" },
-                  { name: "Currency Options", sector: "Fintech", url: "https://currencyoptions.ca/" },
-                  { name: "Apothékary", sector: "Wellness", url: "https://www.apothekary.com/" },
-                  { name: "Seller Africa", sector: "Marketplace", url: "https://sellerafrica.com/" },
+                  { name: "VitalSwap", sector: "Fintech", url: "https://www.vitalswap.com/" },
+                  { name: "Altisure Insurance Brokers", sector: "Insurance", url: "https://altisure.com/" },
+                  { name: "Currency Options", sector: "Fintech/Web3", url: "https://currencyoptions.ca/" },
+                  { name: "Apothékary", sector: "E-commerce", url: "https://www.apothekary.com/" },
+                  { name: "Seller Africa", sector: "Online Marketplace", url: "https://sellerafrica.com/" },
                   { name: "Euracare", sector: "Healthcare", url: "https://euracarehealth.com/" },
-                  { name: "Mouka", sector: "Consumer", url: "https://mouka.com/" },
+                  { name: "Mouka", sector: "Manufacturing", url: "https://mouka.com/" },
                 ].map((client) => (
                   <a
                     key={client.name}
