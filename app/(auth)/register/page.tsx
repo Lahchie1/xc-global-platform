@@ -196,7 +196,7 @@ function RegisterForm() {
 
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
-                Work Email Address
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2" />

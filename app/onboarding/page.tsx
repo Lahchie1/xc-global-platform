@@ -76,11 +76,11 @@ export default function OnboardingPage() {
     }
     if (step === 3) {
       if (!formData.contact_name.trim() || !formData.contact_email.trim()) {
-        setError("Contact Name and Work Email are required.");
+        setError("Contact Name and Email are required.");
         return false;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contact_email)) {
-        setError("Please enter a valid work email address.");
+        setError("Please enter a valid email address.");
         return false;
       }
     }
@@ -467,7 +467,7 @@ export default function OnboardingPage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-1.5">
                           <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
-                            Work Email Address <span className="text-status-error">*</span>
+                            Email Address <span className="text-status-error">*</span>
                           </label>
                           <input
                             type="email"

@@ -63,16 +63,6 @@ function LoginForm() {
     }
   };
 
-  const handleQuickDemoRole = (role: "business" | "talent" | "admin") => {
-    if (redirectParam) {
-      router.push(redirectParam);
-      return;
-    }
-    if (role === "business") router.push("/growth-os");
-    else if (role === "talent") router.push("/talent-os");
-    else if (role === "admin") router.push("/admin");
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -98,7 +88,7 @@ function LoginForm() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
-                Work Email Address
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -156,36 +146,6 @@ function LoginForm() {
               )}
             </button>
           </form>
-
-          {/* Role-Direct Preview Helper */}
-          <div className="pt-4 border-t border-border space-y-2.5">
-            <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider block text-center">
-              Quick Role Navigation Preview
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickDemoRole("business")}
-                className="py-1.5 px-2 rounded bg-surface-container-low border border-border text-[11px] font-medium text-text-primary hover:bg-surface-container"
-              >
-                GrowthOS
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemoRole("talent")}
-                className="py-1.5 px-2 rounded bg-surface-container-low border border-border text-[11px] font-medium text-text-primary hover:bg-surface-container"
-              >
-                TalentOS
-              </button>
-              <button
-                type="button"
-                onClick={() => handleQuickDemoRole("admin")}
-                className="py-1.5 px-2 rounded bg-surface-container-low border border-border text-[11px] font-medium text-text-primary hover:bg-surface-container"
-              >
-                Admin
-              </button>
-            </div>
-          </div>
 
           <div className="pt-2 text-center text-xs text-text-secondary">
             Don’t have an account yet?{" "}
