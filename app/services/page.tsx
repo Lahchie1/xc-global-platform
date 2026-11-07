@@ -24,6 +24,7 @@ export default function ServicesPage() {
   const otherCategories = [
     {
       id: "branding-creative",
+      href: "/services/branding-creative",
       icon: Palette,
       number: "02",
       title: "Branding & Creative Services",
@@ -44,6 +45,7 @@ export default function ServicesPage() {
     },
     {
       id: "talent-solutions",
+      href: "/services/talent-solutions",
       icon: Award,
       number: "03",
       title: "Talent Solutions",
@@ -60,6 +62,7 @@ export default function ServicesPage() {
     },
     {
       id: "training",
+      href: "/services/training-integration",
       icon: GraduationCap,
       number: "04",
       title: "Marketing Training & Team Integration",
@@ -117,13 +120,19 @@ export default function ServicesPage() {
                 </p>
               </div>
 
-              <div className="shrink-0">
+              <div className="shrink-0 flex items-center gap-3">
+                <Link
+                  href="/services/marketing-growth"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-secondary text-primary font-bold text-xs hover:bg-secondary-hover transition-all shadow-sm"
+                >
+                  <span>Dedicated Practice Page</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-container transition-all shadow-sm"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container text-text-primary text-xs font-semibold hover:bg-surface-container-high transition-all"
                 >
-                  <span>Inquire About Growth</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <span>Inquire</span>
                 </Link>
               </div>
             </div>
@@ -200,13 +209,19 @@ export default function ServicesPage() {
                     <p className="text-sm text-text-secondary leading-relaxed">
                       {service.description}
                     </p>
-                    <div className="pt-4">
+                    <div className="pt-4 flex items-center gap-3">
+                      <Link
+                        href={service.href}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-secondary text-primary font-bold text-xs hover:bg-secondary-hover transition-all shadow-sm"
+                      >
+                        <span>Dedicated Practice Page</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
                       <Link
                         href="/contact"
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-container transition-colors shadow-sm"
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-surface-container text-text-primary text-xs font-semibold hover:bg-surface-container-high transition-colors"
                       >
                         <span>Talk to Us</span>
-                        <ArrowRight className="w-4 h-4" />
                       </Link>
                     </div>
                   </div>

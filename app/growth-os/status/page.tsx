@@ -8,37 +8,114 @@ import {
   ArrowRight,
   ExternalLink,
 } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const metadata = {
   title: "Application & Engagement Status | GrowthOS",
   description: "Track your onboarding milestones and active contract status.",
 };
 
-export default function GrowthOSStatusPage() {
+export default async function GrowthOSStatusPage() {
+  let companyName = "Your Business";
+  let status = "pending";
+  let submissionDate = "Recently";
+  let contactName = "";
+
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const admin = createAdminClient();
+
+    if (user) {
+      // Check business_profiles
+      const { data: bProfile } = await admin
+        .from("business_profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (bProfile) {
+        companyName = bProfile.company_name;
+      }
+
+      // Check onboarding_applications
+      const { data: appData } = await admin
+        .from("onboarding_applications")
+        .select("*")
+        .eq("contact_email", user.email)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (appData) {
+        companyName = appData.company_name || companyName;
+        status = appData.status || "pending";
+        contactName = appData.contact_name || "";
+        if (appData.created_at) {
+          submissionDate = new Date(appData.created_at).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+        }
+      } else if (!bProfile) {
+        // Fallback to latest submitted application for previewing
+        const { data: latestApp } = await admin
+          .from("onboarding_applications")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (latestApp) {
+          companyName = latestApp.company_name || companyName;
+          status = latestApp.status || "pending";
+          contactName = latestApp.contact_name || "";
+          if (latestApp.created_at) {
+            submissionDate = new Date(latestApp.created_at).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Status page fetch error:", err);
+  }
+
+  const isAccepted = status === "accepted";
+  const isReviewed = status === "reviewed" || isAccepted;
+
   const steps = [
     {
       title: "Onboarding Application Submitted",
-      date: "October 12, 2026",
+      date: submissionDate,
       status: "completed",
       description: "Initial company profile and commercial objectives submitted via web portal.",
     },
     {
       title: "Growth Diagnostic & Partner Review",
-      date: "October 14, 2026",
-      status: "completed",
-      description: "Ad attribution audit and current channel unit economics inspected by XC Global partners.",
+      date: isReviewed ? "Completed" : "In Progress",
+      status: isReviewed ? "completed" : "active",
+      description: "Channel unit economics, commercial targets, and team structure evaluated by XC Global partners.",
     },
     {
       title: "Commercial Scope & Terms Approved",
-      date: "October 19, 2026",
-      status: "completed",
-      description: "Master Services Agreement (MSA) and 90-day sprint deliverable agreement executed.",
+      date: isAccepted ? "Executed" : "Upcoming",
+      status: isAccepted ? "completed" : "pending",
+      description: "Master Services Agreement (MSA) and sprint deliverable scope finalized.",
     },
     {
       title: "Specialist Squad Embedded & Sprint Live",
-      date: "October 22, 2026",
-      status: "active",
-      description: "Growth lead and retention operator deployed into Slack with live ad accounts access.",
+      date: isAccepted ? "Active" : "Upcoming",
+      status: isAccepted ? "active" : "pending",
+      description: "Dedicated growth lead deployed into direct client liaison channel.",
     },
   ];
 
@@ -53,13 +130,33 @@ export default function GrowthOSStatusPage() {
             Engagement & Application Status
           </h1>
           <p className="text-xs text-text-muted mt-0.5">
-            Transparent milestone progression for ApexPay Technologies Limited.
+            Transparent milestone progression for {companyName}.
           </p>
         </div>
 
-        <span className="px-3.5 py-1.5 rounded-full bg-status-success/10 text-status-success text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 w-fit">
-          <span className="w-2 h-2 rounded-full bg-status-success animate-pulse" />
-          Active In-Sprint Partner
+        <span
+          className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 w-fit ${
+            isAccepted
+              ? "bg-status-success/10 text-status-success"
+              : status === "reviewed"
+              ? "bg-badge-gold-bg text-badge-gold-text"
+              : "bg-surface-container text-text-secondary"
+          }`}
+        >
+          <span
+            className={`w-2 h-2 rounded-full ${
+              isAccepted
+                ? "bg-status-success animate-pulse"
+                : status === "reviewed"
+                ? "bg-accent-gold"
+                : "bg-text-muted"
+            }`}
+          />
+          {status === "accepted"
+            ? "Active In-Sprint Partner"
+            : status === "reviewed"
+            ? "Dossier Under Review"
+            : "Application Pending"}
         </span>
       </div>
 
@@ -84,7 +181,11 @@ export default function GrowthOSStatusPage() {
                 {step.status === "completed" ? (
                   <CheckCircle2 className="w-3.5 h-3.5" />
                 ) : (
-                  <Clock className="w-3.5 h-3.5 text-secondary" />
+                  <Clock
+                    className={`w-3.5 h-3.5 ${
+                      step.status === "active" ? "text-secondary" : "text-text-muted"
+                    }`}
+                  />
                 )}
               </div>
 
@@ -133,21 +234,32 @@ export default function GrowthOSStatusPage() {
             <div className="p-2.5 rounded-lg bg-surface-container-low border border-border/60 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2 font-medium text-text-primary">
                 <FileText className="w-4 h-4 text-text-muted" />
-                <span>Executed_MSA_ApexPay_2026.pdf</span>
+                <span>
+                  {isAccepted
+                    ? `${companyName.replace(/\s+/g, "_")}_Executed_MSA.pdf`
+                    : "Submitted_Growth_Application_Brief.pdf"}
+                </span>
               </div>
-              <span className="text-[11px] text-status-success font-semibold">Active</span>
+              <span
+                className={`text-[11px] font-semibold ${
+                  isAccepted ? "text-status-success" : "text-badge-gold-text"
+                }`}
+              >
+                {isAccepted ? "Active" : "Under Review"}
+              </span>
             </div>
-            <div className="p-2.5 rounded-lg bg-surface-container-low border border-border/60 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2 font-medium text-text-primary">
-                <FileText className="w-4 h-4 text-text-muted" />
-                <span>Sprint_14_SLA_Deliverables.pdf</span>
+            {isAccepted && (
+              <div className="p-2.5 rounded-lg bg-surface-container-low border border-border/60 flex items-center justify-between text-xs">
+                <div className="flex items-center gap-2 font-medium text-text-primary">
+                  <FileText className="w-4 h-4 text-text-muted" />
+                  <span>Sprint_Deliverables_SLA.pdf</span>
+                </div>
+                <span className="text-[11px] text-status-success font-semibold">Active</span>
               </div>
-              <span className="text-[11px] text-status-success font-semibold">Active</span>
-            </div>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
 }
-

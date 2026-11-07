@@ -289,11 +289,16 @@ export default function OnboardingPage() {
                           >
                             <option value="Fintech">Fintech & Payments</option>
                             <option value="E-Commerce">E-Commerce & DTC</option>
+                            <option value="Retail">Retail</option>
+                            <option value="Insurance">Insurance</option>
+                            <option value="Manufacturing">Manufacturing</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Hospitality">Hospitality</option>
                             <option value="B2B SaaS">B2B SaaS & Enterprise</option>
                             <option value="AI">Artificial Intelligence</option>
                             <option value="Web3">Web3 & Digital Assets</option>
                             <option value="HealthTech">HealthTech</option>
-                            <option value="Other">Other Technology</option>
+                            <option value="Other">Other</option>
                           </select>
                         </div>
                       </div>

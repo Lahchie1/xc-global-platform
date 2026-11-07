@@ -8,13 +8,18 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
           {/* Brand Col */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-5">
             <Link href="/" className="inline-block" aria-label="XC Global Home">
               <Logo variant="dark" type="complete" height={38} />
             </Link>
             <p className="text-text-secondary text-sm leading-relaxed max-w-sm">
               XC Global Limited is a marketing agency and tech-focused talent firm. We help businesses scale through marketing services, branding, talent placement, and team integration programmes.
             </p>
+            <div className="pt-2 space-y-1 text-xs text-text-muted">
+              <p className="font-semibold text-text-primary">Operating Hubs:</p>
+              <p>Lagos Commercial Hub (Lagos, Nigeria)</p>
+              <p>International Office (Delhi, India)</p>
+            </div>
           </div>
 
           {/* Services Col */}
@@ -24,22 +29,22 @@ export function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/services" className="text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/services/marketing-growth" className="text-text-secondary hover:text-text-primary transition-colors">
                   Marketing &amp; Growth
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/services/branding-creative" className="text-text-secondary hover:text-text-primary transition-colors">
                   Branding &amp; Creative
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/services/talent-solutions" className="text-text-secondary hover:text-text-primary transition-colors">
                   Talent Solutions
                 </Link>
               </li>
               <li>
-                <Link href="/services" className="text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/services/training-integration" className="text-text-secondary hover:text-text-primary transition-colors">
                   Marketing Training
                 </Link>
               </li>
@@ -117,6 +122,16 @@ export function Footer() {
                 <Link href="/terms" className="text-text-secondary hover:text-text-primary transition-colors">
                   Terms of Service
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/2348086457842"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-text-secondary hover:text-text-primary transition-colors font-medium"
+                >
+                  +2348086457842 (WhatsApp)
+                </a>
               </li>
               <li>
                 <a

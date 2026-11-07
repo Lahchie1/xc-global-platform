@@ -216,9 +216,14 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <span className="text-xs font-semibold text-text-muted block">WhatsApp Liaison</span>
-                      <span className="text-sm font-bold text-text-primary">
-                        +234 (0) 800 XC GLOBAL
-                      </span>
+                      <a
+                        href="https://wa.me/2348086457842"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-bold text-text-primary hover:text-secondary transition-colors"
+                      >
+                        +2348086457842
+                      </a>
                       <p className="text-[11px] text-text-muted">Available Mon - Fri, 9am - 6pm WAT</p>
                     </div>
                   </div>
@@ -230,7 +235,7 @@ export default function ContactPage() {
                     <div>
                       <span className="text-xs font-semibold text-text-muted block">SLA Response Time</span>
                       <span className="text-sm font-semibold text-text-primary">
-                        Under 24 hours guaranteed
+                        Under 3 hours guaranteed
                       </span>
                     </div>
                   </div>
@@ -247,12 +252,12 @@ export default function ContactPage() {
                 <div className="space-y-4 text-xs">
                   <div className="p-3.5 rounded-lg bg-surface-container-low border border-border/60">
                     <span className="font-bold text-text-primary block">Lagos Commercial Hub</span>
-                    <p className="text-text-secondary mt-0.5">Victoria Island, Lagos, Nigeria</p>
+                    <p className="text-text-secondary mt-0.5">Lagos, Nigeria</p>
                   </div>
 
                   <div className="p-3.5 rounded-lg bg-surface-container-low border border-border/60">
-                    <span className="font-bold text-text-primary block">London Advisory Hub</span>
-                    <p className="text-text-secondary mt-0.5">Canary Wharf, London, United Kingdom</p>
+                    <span className="font-bold text-text-primary block">International Office</span>
+                    <p className="text-text-secondary mt-0.5">Delhi, India</p>
                   </div>
                 </div>
               </div>

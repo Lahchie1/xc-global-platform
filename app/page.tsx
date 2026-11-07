@@ -54,7 +54,7 @@ export default function HomePage() {
                   Marketing Agency &amp; Talent Firm
                 </span>
                 <span className="text-white/40 text-xs">|</span>
-                <span className="text-xs text-secondary bg-secondary/15 px-2.5 py-0.5 rounded-full font-semibold">
+                <span className="text-xs text-secondary font-semibold">
                   Trusted by 8+ Brands
                 </span>
               </div>
@@ -149,7 +149,7 @@ export default function HomePage() {
 
         {/* Key Metrics Strip */}
         <ScrollReveal className="max-w-7xl mx-auto px-6 lg:px-12 py-10 w-full">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Metric 1 */}
             <div className="bg-surface-white rounded-xl p-6 shadow-card border border-border flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-secondary to-accent-gold-hover" />
@@ -160,7 +160,7 @@ export default function HomePage() {
                   </span>
                   <TrendingUp className="w-5 h-5 text-accent-gold" />
                 </div>
-                <div className="text-4xl lg:text-5xl font-bold tracking-tight text-text-primary mb-2 flex items-baseline">
+                <div className="text-3xl lg:text-4xl font-bold tracking-tight text-text-primary mb-2 flex items-baseline">
                   <CurrencyAmount usd={120000000} compact suffix="+" />
                 </div>
                 <h3 className="text-base font-semibold text-text-primary mb-1">
@@ -186,7 +186,7 @@ export default function HomePage() {
                   </span>
                   <Award className="w-5 h-5 text-text-primary" />
                 </div>
-                <div className="text-4xl lg:text-5xl font-bold tracking-tight text-text-primary mb-2">
+                <div className="text-3xl lg:text-4xl font-bold tracking-tight text-text-primary mb-2">
                   Top 3<span className="text-text-muted">%</span>
                 </div>
                 <h3 className="text-base font-semibold text-text-primary mb-1">
@@ -202,29 +202,55 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Metric 3 */}
+            {/* Metric 3: GrowthOS */}
+            <div className="bg-surface-white rounded-xl p-6 shadow-card border border-border flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-secondary" />
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
+                    Client Platform
+                  </span>
+                  <Building2 className="w-5 h-5 text-secondary" />
+                </div>
+                <div className="text-3xl lg:text-4xl font-bold tracking-tight text-text-primary mb-2">
+                  GrowthOS
+                </div>
+                <h3 className="text-base font-semibold text-text-primary mb-1">
+                  Build, Manage &amp; Scale
+                </h3>
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  Comprehensive strategy, marketing operations, and dedicated teams to grow your business sustainably.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-border/60 flex items-center gap-2 text-xs text-text-muted">
+                <CheckCircle2 className="w-4 h-4 text-status-success" />
+                <span>Structured growth systems</span>
+              </div>
+            </div>
+
+            {/* Metric 4: TalentOS */}
             <div className="bg-surface-white rounded-xl p-6 shadow-card border border-border flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
               <div className="absolute top-0 left-0 right-0 h-1 bg-primary-tint" />
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
-                    Bespoke Software
+                    Talent Platform
                   </span>
-                  <Layers className="w-5 h-5 text-primary-tint" />
+                  <Terminal className="w-5 h-5 text-primary-tint" />
                 </div>
-                <div className="text-4xl lg:text-5xl font-bold tracking-tight text-text-primary mb-2">
-                  Dual-OS
+                <div className="text-3xl lg:text-4xl font-bold tracking-tight text-text-primary mb-2">
+                  TalentOS
                 </div>
                 <h3 className="text-base font-semibold text-text-primary mb-1">
-                  Operating Infrastructure
+                  Career Opportunities
                 </h3>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  GrowthOS delivers milestone dashboards for founders, while TalentOS equips contractors with sprint toolkits.
+                  Connect marketing skills with ambitious businesses, career training, and vetted job placements.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-border/60 flex items-center gap-2 text-xs text-text-muted">
                 <Lock className="w-4 h-4 text-status-success" />
-                <span>Zero opaque consulting bloat</span>
+                <span>Zero opaque freelancing</span>
               </div>
             </div>
           </div>
@@ -305,7 +331,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <Link
-                href="/services"
+                href="/services/marketing-growth"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary group-hover:text-accent-gold transition-colors"
               >
                 <span>Explore practice</span>
@@ -342,7 +368,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <Link
-                href="/services"
+                href="/services/branding-creative"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary group-hover:text-accent-gold transition-colors"
               >
                 <span>Explore practice</span>
@@ -379,7 +405,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <Link
-                href="/services"
+                href="/services/talent-solutions"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary group-hover:text-accent-gold transition-colors"
               >
                 <span>Explore practice</span>
@@ -416,7 +442,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <Link
-                href="/services"
+                href="/services/training-integration"
                 className="inline-flex items-center gap-2 text-sm font-semibold text-text-primary group-hover:text-accent-gold transition-colors"
               >
                 <span>Explore practice</span>
@@ -426,17 +452,17 @@ export default function HomePage() {
           </div>
         </ScrollReveal>
 
-        {/* Dual-Portal Infrastructure Showcase */}
+        {/* Operating Systems: GrowthOS & TalentOS */}
         <ScrollReveal className="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full" delay={80}>
           <div className="bg-surface-white rounded-2xl shadow-card border border-border overflow-hidden">
             <div className="p-8 sm:p-12 border-b border-border bg-surface-container-low/50">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <span className="text-xs text-badge-gold-text bg-badge-gold-bg px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
-                    Proprietary Dual Infrastructure
+                    The XC Global Ecosystem
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight mt-3">
-                    Built on purpose-crafted software for radical visibility.
+                    Purpose-built infrastructure for business scale &amp; talent development.
                   </h2>
                 </div>
               </div>
@@ -454,66 +480,47 @@ export default function HomePage() {
                       </span>
                     </div>
                     <span className="px-2.5 py-1 rounded text-xs font-semibold bg-surface-container text-text-primary">
-                      Client Portal
+                      For Businesses
                     </span>
                   </div>
 
-                  <p className="text-sm text-text-secondary leading-relaxed">
-                    Track milestones, review vetted talent shortlists, monitor campaign sprint deliverables, and manage your XC Global engagement with uncompromising transparency.
-                  </p>
-
-                  {/* Mock Dashboard Preview */}
-                  <div className="bg-surface-container-low rounded-xl p-5 space-y-4 border border-border/60">
-                    <div className="flex items-center justify-between text-xs text-text-muted">
-                      <span>Active Sprint #14: Q3 Acquisition Ramp</span>
-                      <span className="text-status-success font-semibold flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-status-success" /> In Progress
-                      </span>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-xs text-text-primary">
-                        <span className="font-medium">
-                          Blended CAC Target (<CurrencyAmount usd={34.20} />)
-                        </span>
-                        <span className="text-status-success font-bold">
-                          <CurrencyAmount usd={29.80} /> achieved
-                        </span>
-                      </div>
-                      <div className="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
-                        <div className="h-full bg-status-success rounded-full w-[84%]" />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between pt-2 border-t border-border/40">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold">
-                          DK
-                        </div>
-                        <div className="text-left text-xs">
-                          <p className="font-semibold text-text-primary">David K. (Fractional Lead)</p>
-                          <p className="text-[11px] text-text-muted">Meta & Attribution Stack</p>
-                        </div>
-                      </div>
-                      <span className="text-xs text-text-muted font-mono">Sprint 92% Complete</span>
-                    </div>
+                  <div className="space-y-3">
+                    <h3 className="text-xl sm:text-2xl font-bold text-text-primary leading-snug">
+                      Build, Manage and Scale Your Business with the Right Growth Team.
+                    </h3>
+                    <p className="text-sm font-medium text-text-secondary leading-relaxed">
+                      From marketing strategy and customer acquisition to hiring and training marketing professionals, we help businesses build the systems and teams needed to grow locally and globally.
+                    </p>
                   </div>
 
-                  <ul className="space-y-2.5 pt-2 text-xs text-text-secondary">
+                  {/* Supporting Copy */}
+                  <div className="p-4 rounded-xl bg-surface-container-low border border-border/70 space-y-2 text-xs text-text-secondary leading-relaxed">
+                    <p>
+                      Your business needs more than marketing campaigns to grow. It needs the right strategy, skilled professionals, and consistent execution.
+                    </p>
+                    <p className="font-medium text-text-primary">
+                      At XC Global, we bring these elements together to help you attract customers, improve performance, and build sustainable growth.
+                    </p>
+                  </div>
+
+                  {/* Feature Bullets */}
+                  <ul className="space-y-2.5 pt-1 text-xs text-text-secondary">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-accent-gold" />
-                      <span>Real-time attribution & sprint ledger synchronization</span>
+                      <CheckCircle2 className="w-4 h-4 text-accent-gold shrink-0" />
+                      <span>End-to-end go-to-market and paid acquisition architecture</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-accent-gold" />
-                      <span>Direct candidate profile review & 1-click contract activation</span>
+                      <CheckCircle2 className="w-4 h-4 text-accent-gold shrink-0" />
+                      <span>Dedicated, vetted marketing specialists embedded in your workflow</span>
                     </li>
                   </ul>
                 </div>
 
                 <Link
-                  href="/onboarding"
+                  href="/services"
                   className="w-full py-3.5 px-6 rounded-lg bg-primary text-white font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary-container transition-all shadow-sm"
                 >
-                  <span>Start Business Onboarding</span>
+                  <span>Explore Our Services</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -529,54 +536,41 @@ export default function HomePage() {
                       </span>
                     </div>
                     <span className="px-2.5 py-1 rounded text-xs font-semibold bg-badge-gold-bg text-badge-gold-text">
-                      Specialist Portal
+                      For Talents
                     </span>
                   </div>
 
-                  <p className="text-sm text-text-secondary leading-relaxed">
-                    Access curated venture briefs from vetted technology startups, showcase verified performance records, and collaborate on growth initiatives without cold outreach.
-                  </p>
-
-                  {/* Mock TalentOS Preview */}
-                  <div className="bg-surface-container-low rounded-xl p-5 space-y-4 border border-border/60">
-                    <div className="flex items-center justify-between text-xs text-text-muted">
-                      <span>Matching Opportunities (3 New Briefs)</span>
-                      <span className="text-badge-gold-text font-semibold flex items-center gap-1">
-                        <Star className="w-3.5 h-3.5 fill-current" /> High Relevance
-                      </span>
-                    </div>
-                    <div className="bg-surface-white p-3 rounded-lg border border-border/60 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-text-primary">
-                          Series A B2B SaaS — EMEA
-                        </span>
-                        <span className="text-xs font-mono font-semibold text-badge-gold-text bg-badge-gold-bg px-2 py-0.5 rounded">
-                          <CurrencyAmount usd={8500} compact suffix=" / mo" />
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-text-secondary">
-                        Product-Led Funnel Optimization & Self-Serve Architecture
-                      </p>
-                      <div className="flex items-center gap-2 pt-1 text-[11px]">
-                        <span className="bg-surface-container px-2 py-0.5 rounded text-text-muted">HubSpot</span>
-                        <span className="bg-surface-container px-2 py-0.5 rounded text-text-muted">Mixpanel</span>
-                        <span className="bg-surface-container px-2 py-0.5 rounded text-text-muted">Stripe</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-text-muted">
-                      <span>Payout Reliability: <strong className="text-text-primary">100% Escrow Guaranteed</strong></span>
-                      <CheckCircle2 className="w-4 h-4 text-status-success" />
-                    </div>
+                  <div className="space-y-3">
+                    <h3 className="text-xl sm:text-2xl font-bold text-text-primary leading-snug">
+                      Turn Your Marketing Skills into Real Career Opportunities.
+                    </h3>
+                    <p className="text-sm font-medium text-text-secondary leading-relaxed">
+                      Get discovered by growing businesses, develop practical marketing skills, and access opportunities to work with brands looking for talented professionals.
+                    </p>
                   </div>
 
-                  <ul className="space-y-2.5 pt-2 text-xs text-text-secondary">
+                  {/* Supporting Copy */}
+                  <div className="p-4 rounded-xl bg-surface-container-low border border-border/70 space-y-2 text-xs text-text-secondary leading-relaxed">
+                    <p>
+                      Your skills deserve the right opportunities.
+                    </p>
+                    <p>
+                      Whether you&apos;re starting your marketing career or looking to take the next step, we help you build your professional experience, improve your skills, and connect with businesses that need your expertise.
+                    </p>
+                    <p className="font-medium text-text-primary">
+                      Through professional training, talent development, and recruitment opportunities, we help you move closer to your career goals.
+                    </p>
+                  </div>
+
+                  {/* Feature Bullets */}
+                  <ul className="space-y-2.5 pt-1 text-xs text-text-secondary">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-accent-gold" />
-                      <span>Zero bidding, zero race-to-the-bottom freelancing rates</span>
+                      <CheckCircle2 className="w-4 h-4 text-accent-gold shrink-0" />
+                      <span>Curated venture briefs with verified compensation</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-accent-gold" />
-                      <span>Verified portfolio ledger accredited by XC Global</span>
+                      <CheckCircle2 className="w-4 h-4 text-accent-gold shrink-0" />
+                      <span>6-month structured training &amp; career mentorship programmes</span>
                     </li>
                   </ul>
                 </div>
@@ -585,8 +579,8 @@ export default function HomePage() {
                   href="/register?role=talent"
                   className="w-full py-3.5 px-6 rounded-lg bg-surface-white text-text-primary border border-border font-semibold text-sm flex items-center justify-center gap-2 hover:bg-surface-container-low transition-all shadow-sm"
                 >
-                  <span>Apply to Talent Network</span>
-                  <Award className="w-4 h-4" />
+                  <span>Join as a Talent</span>
+                  <Award className="w-4 h-4 text-accent-gold" />
                 </Link>
               </div>
             </div>

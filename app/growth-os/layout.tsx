@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { PortalShell } from "@/components/layout/PortalShell";
 import {
   LayoutDashboard,
@@ -21,16 +22,49 @@ const navItems = [
 ];
 
 export default function GrowthOSLayout({ children }: { children: React.ReactNode }) {
+  const [badge, setBadge] = useState({
+    initials: "GO",
+    name: "Growth Client",
+    subtitle: "Venture Account",
+  });
+
+  useEffect(() => {
+    async function loadClientInfo() {
+      try {
+        const res = await fetch("/api/growth/profile");
+        if (res.ok) {
+          const data = await res.json();
+          const name = data.company_name || data.contact_name || "Growth Client";
+          const initials = name
+            .split(" ")
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((w: string) => w[0].toUpperCase())
+            .join("") || "GO";
+
+          setBadge({
+            initials,
+            name,
+            subtitle: data.status ? `${data.status.toUpperCase()} Account` : "Venture Partner",
+          });
+        }
+      } catch (err) {
+        // Fallback default
+      }
+    }
+    loadClientInfo();
+  }, []);
+
   return (
     <PortalShell
       navItems={navItems}
       portalName="GrowthOS"
       portalSubtitle="Client Portal"
-      userBadge={{ initials: "AP", name: "ApexPay Ltd", subtitle: "Verified Client" }}
+      userBadge={badge}
       footerExtra={
         <div className="flex items-center gap-1.5 px-1 py-1">
           <ShieldCheck className="w-3.5 h-3.5 text-status-success" />
-          <span className="text-[11px] font-semibold text-status-success">Verified Client</span>
+          <span className="text-[11px] font-semibold text-status-success">Growth Partner</span>
         </div>
       }
     >

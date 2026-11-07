@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { UserRole } from "@/types/database";
+import { createClient } from "@/lib/supabase/client";
 import {
   Building2,
   Terminal,
@@ -58,9 +59,22 @@ function RegisterForm() {
         throw new Error(data.error || "Registration failed.");
       }
 
+      // Automatically sign in on the client to establish session cookies for middleware
+      try {
+        const supabase = createClient();
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+      } catch (signInErr) {
+        console.warn("Client auto-session sign in warning:", signInErr);
+      }
+
       // Redirect directly to the appropriate portal
       if (role === "talent") {
-        router.push("/talent-os");
+        router.push(
+          `/talent-os/profile?onboarding=true&name=${encodeURIComponent(fullName)}&email=${encodeURIComponent(email)}`
+        );
       } else {
         router.push("/growth-os");
       }

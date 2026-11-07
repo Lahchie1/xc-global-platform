@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { PortalShell } from "@/components/layout/PortalShell";
 import {
   LayoutDashboard,
@@ -19,12 +20,45 @@ const navItems = [
 ];
 
 export default function TalentOSLayout({ children }: { children: React.ReactNode }) {
+  const [badge, setBadge] = useState({
+    initials: "TO",
+    name: "Talent Specialist",
+    subtitle: "Marketing Professional",
+  });
+
+  useEffect(() => {
+    async function loadTalentInfo() {
+      try {
+        const res = await fetch("/api/talent/profile");
+        if (res.ok) {
+          const data = await res.json();
+          const name = data.full_name || (data.email ? data.email.split("@")[0] : "Talent Member");
+          const initials = name
+            .split(" ")
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((w: string) => w[0].toUpperCase())
+            .join("") || "TO";
+
+          setBadge({
+            initials,
+            name,
+            subtitle: data.headline || "Talent Member",
+          });
+        }
+      } catch (err) {
+        // Fallback default
+      }
+    }
+    loadTalentInfo();
+  }, []);
+
   return (
     <PortalShell
       navItems={navItems}
       portalName="TalentOS"
       portalSubtitle="Specialist Console"
-      userBadge={{ initials: "DK", name: "David K.", subtitle: "Vetted · Top 3%" }}
+      userBadge={badge}
       footerExtra={
         <div className="flex items-center gap-1.5 px-1 py-1">
           <ShieldCheck className="w-3.5 h-3.5 text-accent-gold" />

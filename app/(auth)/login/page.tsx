@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { ArrowRight, Lock, Mail, Loader2, ShieldCheck, User } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectParam = searchParams?.get("redirect");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,6 +30,10 @@ export default function LoginPage() {
 
       if (signInError) {
         // Fallback for demo / preview credentials if local Supabase placeholder is active
+        if (redirectParam) {
+          router.push(redirectParam);
+          return;
+        }
         if (email.includes("business") || email.includes("growth")) {
           router.push("/growth-os");
           return;
@@ -39,6 +45,11 @@ export default function LoginPage() {
           return;
         }
         throw new Error(signInError.message);
+      }
+
+      if (redirectParam) {
+        router.push(redirectParam);
+        return;
       }
 
       const role = data.user?.user_metadata?.role || "business";
@@ -53,6 +64,10 @@ export default function LoginPage() {
   };
 
   const handleQuickDemoRole = (role: "business" | "talent" | "admin") => {
+    if (redirectParam) {
+      router.push(redirectParam);
+      return;
+    }
     if (role === "business") router.push("/growth-os");
     else if (role === "talent") router.push("/talent-os");
     else if (role === "admin") router.push("/admin");
@@ -181,6 +196,14 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center text-xs text-text-muted">Loading sign in...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }
 
