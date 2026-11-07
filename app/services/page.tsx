@@ -5,7 +5,7 @@ import { marketingGrowthServices } from "@/lib/data/servicesData";
 import {
   TrendingUp,
   Palette,
-  Award,
+  User,
   GraduationCap,
   CheckCircle2,
   ArrowRight,
@@ -46,7 +46,7 @@ export default function ServicesPage() {
     {
       id: "talent-solutions",
       href: "/services/talent-solutions",
-      icon: Award,
+      icon: User,
       number: "03",
       title: "Talent Solutions",
       tagline: "Find and build the right marketing talent for your growth needs.",

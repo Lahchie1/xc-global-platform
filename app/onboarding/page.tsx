@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import {
   Building2,
   Target,
-  UserCheck,
+  User,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
@@ -159,7 +159,7 @@ export default function OnboardingPage() {
               {[
                 { step: 1, title: "Company", icon: Building2 },
                 { step: 2, title: "Needs & Goals", icon: Target },
-                { step: 3, title: "Contact & Review", icon: UserCheck },
+                { step: 3, title: "Contact & Review", icon: User },
               ].map((s) => {
                 const Icon = s.icon;
                 const isCompleted = currentStep > s.step;

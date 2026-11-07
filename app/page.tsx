@@ -16,7 +16,7 @@ import {
   Zap,
   Lock,
   Building2,
-  Terminal,
+  User,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -236,7 +236,7 @@ export default function HomePage() {
                   <span className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                     Talent Platform
                   </span>
-                  <Terminal className="w-5 h-5 text-primary-tint" />
+                  <User className="w-5 h-5 text-primary-tint" />
                 </div>
                 <div className="text-3xl lg:text-4xl font-bold tracking-tight text-text-primary mb-2">
                   TalentOS
@@ -530,7 +530,7 @@ export default function HomePage() {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Terminal className="w-6 h-6 text-accent-gold" />
+                      <User className="w-6 h-6 text-accent-gold" />
                       <span className="text-xl font-bold text-text-primary tracking-tight">
                         TalentOS
                       </span>

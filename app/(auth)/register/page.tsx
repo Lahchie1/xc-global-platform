@@ -7,11 +7,10 @@ import { UserRole } from "@/types/database";
 import { createClient } from "@/lib/supabase/client";
 import {
   Building2,
-  Terminal,
+  User,
   ArrowRight,
   Mail,
   Lock,
-  User,
   Loader2,
   Check,
 } from "lucide-react";
@@ -138,7 +137,7 @@ function RegisterForm() {
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <Terminal className={`w-5 h-5 ${role === "talent" ? "text-secondary" : "text-text-muted"}`} />
+                  <User className={`w-5 h-5 ${role === "talent" ? "text-secondary" : "text-text-muted"}`} />
                   {role === "talent" && <Check className="w-4 h-4 text-secondary stroke-[3]" />}
                 </div>
                 <div>

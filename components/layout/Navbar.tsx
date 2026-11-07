@@ -11,7 +11,6 @@ import {
   ChevronDown,
   TrendingUp,
   Palette,
-  Award,
   GraduationCap,
   Sparkles,
 } from "lucide-react";
@@ -34,7 +33,7 @@ export const majorServices = [
     name: "Talent Solutions",
     href: "/services/talent-solutions",
     tagline: "Recruitment, team building & embedded growth specialists",
-    icon: Award,
+    icon: User,
   },
   {
     name: "Marketing Training & Team Integration",
