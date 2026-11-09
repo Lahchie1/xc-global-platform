@@ -141,7 +141,7 @@ function RegisterForm() {
                   {role === "talent" && <Check className="w-4 h-4 text-secondary stroke-[3]" />}
                 </div>
                 <div>
-                  <div className="text-xs font-bold">Specialist Talent</div>
+                  <div className="text-xs font-bold">Talent</div>
                   <div className={`text-[11px] mt-0.5 ${role === "talent" ? "text-gray-300" : "text-text-muted"}`}>
                     TalentOS Access
                   </div>

@@ -1,4 +1,5 @@
 export type UserRole = "business" | "talent" | "admin";
+export type AdminLevel = "super_admin" | "service_admin" | "reader_admin";
 
 export type ApplicationStatus = "pending" | "reviewed" | "accepted" | "rejected";
 

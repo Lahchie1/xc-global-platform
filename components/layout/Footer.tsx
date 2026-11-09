@@ -16,9 +16,9 @@ export function Footer() {
               XC Global Limited is a marketing agency and tech-focused talent firm. We help businesses scale through marketing services, branding, talent placement, and team integration programmes.
             </p>
             <div className="pt-2 space-y-1 text-xs text-text-muted">
-              <p className="font-semibold text-text-primary">Operating Hubs:</p>
-              <p>Lagos Commercial Hub (Lagos, Nigeria)</p>
-              <p>International Office (Delhi, India)</p>
+              <p className="font-semibold text-text-primary">Operating Hubs</p>
+              <p>HQ: Lagos, Nigeria</p>
+              <p>International Office: Delhi, India</p>
             </div>
           </div>
 
@@ -63,13 +63,13 @@ export function Footer() {
             </h4>
             <ul className="space-y-3 text-sm">
               <li>
-                <Link href="/growth-os" className="text-text-secondary hover:text-text-primary flex items-center gap-1 group transition-colors">
+                <Link href="/login?redirect=%2Fgrowth-os" className="text-text-secondary hover:text-text-primary flex items-center gap-1 group transition-colors">
                   <span>GrowthOS (Firms)</span>
                   <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </li>
               <li>
-                <Link href="/talent-os" className="text-text-secondary hover:text-text-primary flex items-center gap-1 group transition-colors">
+                <Link href="/login?redirect=%2Ftalent-os" className="text-text-secondary hover:text-text-primary flex items-center gap-1 group transition-colors">
                   <span>TalentOS (Talents)</span>
                   <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
                 </Link>

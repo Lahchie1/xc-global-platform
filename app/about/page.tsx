@@ -216,7 +216,7 @@ export default function AboutPage() {
                   Pan-African Roots, Global Horizon
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
-                  Headquartered in Lagos with operational presence and remote specialist talent supporting brands to reach new markets and scale sustainably.
+                  Headquartered in Lagos with operational presence and remote talent supporting brands to reach new markets and scale sustainably.
                 </p>
               </div>
 

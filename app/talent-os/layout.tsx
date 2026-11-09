@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { name: "Specialist Dashboard", href: "/talent-os", icon: LayoutDashboard },
-  { name: "Specialist Profile & CV", href: "/talent-os/profile", icon: User },
+  { name: "Talent Dashboard", href: "/talent-os", icon: LayoutDashboard },
+  { name: "Talent Profile & CV", href: "/talent-os/profile", icon: User },
   { name: "Curated Opportunities", href: "/talent-os/opportunities", icon: Briefcase },
   { name: "My Applications", href: "/talent-os/applications", icon: FileCheck },
   { name: "Account Settings", href: "/talent-os/settings", icon: Settings },
@@ -22,7 +22,7 @@ const navItems = [
 export default function TalentOSLayout({ children }: { children: React.ReactNode }) {
   const [badge, setBadge] = useState({
     initials: "TO",
-    name: "Talent Specialist",
+    name: "Talent Member",
     subtitle: "Marketing Professional",
   });
 
@@ -57,12 +57,12 @@ export default function TalentOSLayout({ children }: { children: React.ReactNode
     <PortalShell
       navItems={navItems}
       portalName="TalentOS"
-      portalSubtitle="Specialist Console"
+      portalSubtitle="Talent Console"
       userBadge={badge}
       footerExtra={
         <div className="flex items-center gap-1.5 px-1 py-1">
           <ShieldCheck className="w-3.5 h-3.5 text-accent-gold" />
-          <span className="text-[11px] font-semibold text-badge-gold-text">Vetted Specialist</span>
+          <span className="text-[11px] font-semibold text-badge-gold-text">Vetted Talent</span>
         </div>
       }
     >

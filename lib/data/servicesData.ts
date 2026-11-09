@@ -419,7 +419,7 @@ export const marketingGrowthServices: MarketingGrowthService[] = [
     title: "Growth Team Management",
     tagline: "Build and coordinate the marketing team your business needs to scale.",
     summary:
-      "We help businesses establish and manage marketing teams that are aligned with their growth objectives. Whether you need to structure an existing team, bring in specialist talent, or coordinate multiple marketing functions, we create a clearer framework for responsibilities, priorities, and execution. By connecting people, processes, and performance measurement, we help reduce fragmented efforts and improve coordination across your marketing activities, keeping the team focused on the initiatives most likely to move the business forward.",
+      "We help businesses establish and manage marketing teams that are aligned with their growth objectives. Whether you need to structure an existing team, bring in talent, or coordinate multiple marketing functions, we create a clearer framework for responsibilities, priorities, and execution. By connecting people, processes, and performance measurement, we help reduce fragmented efforts and improve coordination across your marketing activities, keeping the team focused on the initiatives most likely to move the business forward.",
     shortDescription:
       "Building, managing, and coordinating marketing teams around measurable growth objectives.",
     deliverables: [

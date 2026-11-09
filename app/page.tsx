@@ -511,7 +511,7 @@ export default function HomePage() {
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-accent-gold shrink-0" />
-                      <span>Dedicated, vetted marketing specialists embedded in your workflow</span>
+                      <span>Dedicated, vetted marketing talent embedded in your workflow</span>
                     </li>
                   </ul>
                 </div>
@@ -579,8 +579,8 @@ export default function HomePage() {
                   href="/register?role=talent"
                   className="w-full py-3.5 px-6 rounded-lg bg-surface-white text-text-primary border border-border font-semibold text-sm flex items-center justify-center gap-2 hover:bg-surface-container-low transition-all shadow-sm"
                 >
-                  <span>Join as a Talent</span>
-                  <Award className="w-4 h-4 text-accent-gold" />
+                  <span>Join as Talent</span>
+                  <User className="w-4 h-4 text-accent-gold" />
                 </Link>
               </div>
             </div>
@@ -635,7 +635,7 @@ export default function HomePage() {
                 Ready to institutionalize your growth engine?
               </h2>
               <p className="text-base text-gray-300 leading-relaxed">
-                Connect with our partnership directors to deploy dedicated marketing leaders or apply to join our specialist bench.
+                Connect with our partnership directors to deploy dedicated marketing leaders or apply to join our talent bench.
               </p>
             </div>
 
@@ -650,7 +650,7 @@ export default function HomePage() {
                 href="/register?role=talent"
                 className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-surface-white/10 text-white border border-white/20 font-semibold text-sm hover:bg-surface-white/20 transition-colors"
               >
-                Apply as Specialist Talent
+                Join as Talent
               </Link>
             </div>
           </div>

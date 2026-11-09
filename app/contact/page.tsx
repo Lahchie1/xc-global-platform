@@ -251,13 +251,11 @@ export default function ContactPage() {
 
                 <div className="space-y-4 text-xs">
                   <div className="p-3.5 rounded-lg bg-surface-container-low border border-border/60">
-                    <span className="font-bold text-text-primary block">Lagos Commercial Hub</span>
-                    <p className="text-text-secondary mt-0.5">Lagos, Nigeria</p>
+                    <span className="font-bold text-text-primary block">HQ: Lagos, Nigeria</span>
                   </div>
 
                   <div className="p-3.5 rounded-lg bg-surface-container-low border border-border/60">
-                    <span className="font-bold text-text-primary block">International Office</span>
-                    <p className="text-text-secondary mt-0.5">Delhi, India</p>
+                    <span className="font-bold text-text-primary block">International Office: Delhi, India</span>
                   </div>
                 </div>
               </div>

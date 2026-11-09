@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { createClient } from "@/lib/supabase/server";
 import { ArrowLeft, Calendar, Clock, Share2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { BlogContentRenderer } from "@/components/blog/BlogContentRenderer";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -131,44 +132,8 @@ export default async function BlogPostPage({ params }: PageProps) {
           </header>
 
           {/* Article Body */}
-          <div className="py-10 space-y-6 text-base text-text-primary leading-relaxed">
-            {post.content.split("\n\n").map((block: string, index: number) => {
-              if (block.startsWith("### ")) {
-                return (
-                  <h3 key={index} className="text-xl sm:text-2xl font-bold text-text-primary pt-4">
-                    {block.replace("### ", "")}
-                  </h3>
-                );
-              }
-              if (block.startsWith("> ")) {
-                return (
-                  <blockquote
-                    key={index}
-                    className="p-6 my-6 border-l-4 border-secondary bg-surface-white rounded-r-xl shadow-sm text-sm sm:text-base font-medium italic text-text-primary"
-                  >
-                    {block.replace("> ", "")}
-                  </blockquote>
-                );
-              }
-              if (block.includes("1. **") || block.includes("- **")) {
-                const lines = block.split("\n");
-                return (
-                  <ul key={index} className="space-y-2.5 my-4 bg-surface-white p-6 rounded-xl border border-border">
-                    {lines.map((line, lIdx) => (
-                      <li key={lIdx} className="text-xs sm:text-sm text-text-secondary flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-status-success shrink-0 mt-0.5" />
-                        <span>{line.replace(/^[0-9]\.\s|\-\s/, "")}</span>
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }
-              return (
-                <p key={index} className="text-text-secondary text-sm sm:text-base leading-relaxed">
-                  {block}
-                </p>
-              );
-            })}
+          <div className="py-10">
+            <BlogContentRenderer content={post.content} />
           </div>
 
           {/* Engagement Callout Box */}

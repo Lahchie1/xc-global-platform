@@ -51,7 +51,7 @@ export default function ServicesPage() {
       title: "Talent Solutions",
       tagline: "Find and build the right marketing talent for your growth needs.",
       description:
-        "We help businesses find, vet, and place high-performing marketing specialists and growth leaders tailored to their stage.",
+        "We help businesses find, vet, and place high-performing marketing talent and growth leaders tailored to their stage.",
       services: [
         "Marketing Talent Recruitment",
         "Marketing Team Building",

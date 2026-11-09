@@ -17,12 +17,12 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export const metadata = {
-  title: "Specialist Dashboard | TalentOS",
+  title: "Talent Dashboard | TalentOS",
   description: "Manage your vetted placement, view curated venture briefs, and track opportunities.",
 };
 
 export default async function TalentOSDashboard() {
-  let userName = "Marketing Specialist";
+  let userName = "Marketing Talent";
   let userEmail = "";
   let headline = "Talent Profile Setup Pending";
   let availability = "Not specified";
@@ -98,7 +98,7 @@ export default async function TalentOSDashboard() {
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-accent-gold">
-              TalentOS Specialist Console
+              TalentOS Console
             </span>
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-status-success" />
           </div>
@@ -106,7 +106,7 @@ export default async function TalentOSDashboard() {
             Welcome back, {userName}
           </h1>
           <p className="text-xs text-text-muted mt-0.5">
-            Status: Active Specialist &bull; Availability: {availability} &bull; {location}
+            Status: Active Talent &bull; Availability: {availability} &bull; {location}
           </p>
         </div>
 
@@ -132,7 +132,7 @@ export default async function TalentOSDashboard() {
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-accent-gold" />
             <h3 className="text-xs font-bold text-text-primary">
-              Vetted Specialist Profile: {completeness}% Complete
+              Vetted Talent Profile: {completeness}% Complete
             </h3>
           </div>
           <p className="text-xs text-text-secondary">
