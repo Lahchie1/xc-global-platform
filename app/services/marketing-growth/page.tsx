@@ -102,10 +102,10 @@ export default function MarketingGrowthPage() {
               Service Provisions
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-text-primary">
-              All 9 Marketing &amp; Growth Services
+              What We Deliver
             </h2>
             <p className="text-sm text-text-secondary max-w-2xl">
-              Comprehensive capabilities covering every layer of modern marketing, acquisition, and revenue growth. Select any service to explore full deliverables, methodology, and engagement options.
+              Comprehensive capabilities covering every layer of modern marketing, acquisition, and revenue growth.
             </p>
           </div>
 
