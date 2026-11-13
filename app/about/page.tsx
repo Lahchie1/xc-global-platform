@@ -228,7 +228,7 @@ export default function AboutPage() {
                 </div>
                 <div className="bg-surface-white/10 p-5 rounded-xl border border-white/10">
                   <h4 className="font-bold text-secondary text-sm">Global Reach</h4>
-                  <p className="text-xs text-gray-300 mt-1">UK, North America & Beyond</p>
+                  <p className="text-xs text-gray-300 mt-1">Africa, North America, Europe</p>
                   <p className="text-[11px] text-gray-400 mt-0.5">Cross-Border Market Strategy</p>
                 </div>
               </div>

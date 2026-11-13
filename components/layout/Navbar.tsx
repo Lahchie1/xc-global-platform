@@ -12,6 +12,7 @@ import {
   TrendingUp,
   Palette,
   GraduationCap,
+  Building2,
   Sparkles,
 } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
@@ -40,6 +41,12 @@ export const majorServices = [
     href: "/services/training-integration",
     tagline: "6-month structured training & workplace culture integration",
     icon: GraduationCap,
+  },
+  {
+    name: "CAC Business Registration & Compliance Support",
+    href: "/services/business-registration",
+    tagline: "CAC registration, incorporation & compliance documentation",
+    icon: Building2,
   },
 ];
 
@@ -192,7 +199,7 @@ export function Navbar() {
                 <div className="bg-surface-white rounded-2xl border border-border shadow-2xl p-3 space-y-1">
                   <div className="px-3 py-2 border-b border-border/60 flex items-center justify-between">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-text-muted">
-                      Our 4 Core Practices
+                      Our 5 Core Practices
                     </span>
                     <Link
                       href="/services"

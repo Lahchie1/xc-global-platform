@@ -7,6 +7,7 @@ import {
   Palette,
   User,
   GraduationCap,
+  Building2,
   CheckCircle2,
   ArrowRight,
   Sparkles,
@@ -78,6 +79,22 @@ export default function ServicesPage() {
         "Team Integration – Helping newly hired or existing marketing professionals become productive, collaborative members",
       ],
     },
+    {
+      id: "business-registration",
+      href: "/services/business-registration",
+      icon: Building2,
+      number: "05",
+      title: "CAC Business Registration & Compliance Support",
+      tagline: "Make your business official with the right guidance and support.",
+      description:
+        "At XC Global Limited, we help entrepreneurs, startups and established businesses navigate the Nigerian business registration process, from choosing the right structure to preparing documents and completing CAC registration.",
+      services: [
+        "Business Name Registration – Name checks, reservation, documentation & CAC application guidance",
+        "Limited Liability Company Registration – LLC incorporation, company structure, director & shareholder setup",
+        "Registration Documentation & Application Support – Requirements assessment, prep, review & guided filing",
+        "Post-Registration Documentation Support – CAC records, status info & statutory post-registration obligations",
+      ],
+    },
   ];
 
   return (
@@ -102,8 +119,8 @@ export default function ServicesPage() {
         <section className="max-w-7xl mx-auto px-6 lg:px-12 pb-20">
           <div className="bg-surface-white rounded-3xl border border-border p-8 sm:p-14 shadow-card space-y-10">
             {/* Header of 01 */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/80">
-              <div className="space-y-3 max-w-2xl">
+            <div className="space-y-5 pb-6 border-b border-border/80">
+              <div className="space-y-3 max-w-3xl">
                 <div className="flex items-center gap-2.5">
                   <span className="w-8 h-8 rounded-lg bg-surface-container-low flex items-center justify-center text-primary font-bold text-xs">
                     <TrendingUp className="w-4 h-4 text-accent-gold" />
@@ -120,7 +137,7 @@ export default function ServicesPage() {
                 </p>
               </div>
 
-              <div className="shrink-0 flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href="/services/marketing-growth"
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-secondary text-primary font-bold text-xs hover:bg-secondary-hover transition-all shadow-sm"

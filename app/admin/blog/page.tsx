@@ -24,6 +24,8 @@ import {
   Sparkles,
   X,
   ExternalLink,
+  Upload,
+  FileImage,
 } from "lucide-react";
 import { BlogPost } from "@/types/database";
 import { BlogContentRenderer } from "@/components/blog/BlogContentRenderer";
@@ -44,18 +46,25 @@ export default function AdminBlogPage() {
   const [coverImage, setCoverImage] = useState("");
   const [published, setPublished] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [coverUploading, setCoverUploading] = useState(false);
 
-  // Image Modal
+  // Image Modal states
   const [imageModalOpen, setImageModalOpen] = useState(false);
+  const [imageTab, setImageTab] = useState<"upload" | "url">("upload");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [imageCaption, setImageCaption] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
 
-  // Link Modal
+  // Link Modal states
   const [linkModalOpen, setLinkModalOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [linkText, setLinkText] = useState("");
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   const fetchPosts = async () => {
     try {
@@ -122,13 +131,127 @@ export default function AdminBlogPage() {
     }, 50);
   };
 
-  const handleInsertImage = () => {
-    if (!imageUrl.trim()) return;
-    const markdown = `\n\n![${imageCaption.trim() || "Article Visual"}](${imageUrl.trim()})\n\n`;
-    insertTextAtCursor(markdown, "", "");
+  // List insertion handler
+  const handleInsertList = (ordered: boolean) => {
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      const template = ordered
+        ? "\n1. Step one\n2. Step two\n3. Step three\n"
+        : "\n- First point\n- Second point\n- Third point\n";
+      setContent((prev) => prev + template);
+      return;
+    }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selected = content.substring(start, end);
+
+    if (selected.trim()) {
+      const lines = selected.split("\n");
+      const formatted = lines
+        .map((l, idx) =>
+          ordered
+            ? `${idx + 1}. ${l.replace(/^[-*•\d.]\s*/, "")}`
+            : `- ${l.replace(/^[-*•\d.]\s*/, "")}`
+        )
+        .join("\n");
+      const newContent = content.substring(0, start) + formatted + content.substring(end);
+      setContent(newContent);
+    } else {
+      const template = ordered
+        ? "\n1. Step one\n2. Step two\n3. Step three\n"
+        : "\n- First point\n- Second point\n- Third point\n";
+      insertTextAtCursor(template, "", "");
+    }
+  };
+
+  // Image Selection Handler (from PC)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setFilePreview(URL.createObjectURL(file));
+      if (!imageCaption) {
+        setImageCaption(file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "));
+      }
+    }
+  };
+
+  // Upload image from PC or insert URL
+  const handleConfirmInsertImage = async () => {
+    if (imageTab === "upload") {
+      if (!selectedFile) {
+        alert("Please select an image file from your computer");
+        return;
+      }
+
+      setUploadingImage(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+
+        const res = await fetch("/api/admin/blog/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Upload failed");
+
+        const finalUrl = data.url;
+        const caption = imageCaption.trim() || "Article Visual";
+        const markdown = `\n\n![${caption}](${finalUrl})\n\n`;
+
+        insertTextAtCursor(markdown, "", "");
+        closeImageModal();
+      } catch (err: any) {
+        alert(err?.message || "Failed to upload picture");
+      } finally {
+        setUploadingImage(false);
+      }
+    } else {
+      // URL Tab
+      if (!imageUrl.trim()) return;
+      const markdown = `\n\n![${imageCaption.trim() || "Article Visual"}](${imageUrl.trim()})\n\n`;
+      insertTextAtCursor(markdown, "", "");
+      closeImageModal();
+    }
+  };
+
+  const closeImageModal = () => {
+    setImageModalOpen(false);
+    setSelectedFile(null);
+    setFilePreview(null);
     setImageUrl("");
     setImageCaption("");
-    setImageModalOpen(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  // Cover Image Upload from PC
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setCoverUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/admin/blog/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Cover upload failed");
+
+      setCoverImage(data.url);
+    } catch (err: any) {
+      alert(err?.message || "Failed to upload cover picture");
+    } finally {
+      setCoverUploading(false);
+      if (coverInputRef.current) coverInputRef.current.value = "";
+    }
   };
 
   const handleInsertLink = () => {
@@ -220,7 +343,7 @@ export default function AdminBlogPage() {
             Blog &amp; Publications Studio
           </h1>
           <p className="text-xs text-text-muted mt-0.5">
-            Draft, format, insert visuals at intervals, embed references, and publish insights to xcglobalhq.com.
+            Draft, format, upload pictures directly from your PC at intervals, embed references, and publish insights.
           </p>
         </div>
 
@@ -287,7 +410,12 @@ export default function AdminBlogPage() {
                   onChange={(e) => {
                     setTitle(e.target.value);
                     if (!editingPostId) {
-                      setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
+                      setSlug(
+                        e.target.value
+                          .toLowerCase()
+                          .replace(/[^a-z0-9]+/g, "-")
+                          .replace(/^-|-$/g, "")
+                      );
                     }
                   }}
                   placeholder="e.g. Precision Growth Architecture for High-Velocity Ventures"
@@ -322,12 +450,34 @@ export default function AdminBlogPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold uppercase text-text-muted">Cover Image URL (Optional)</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold uppercase text-text-muted">Cover Image</label>
+                  <button
+                    type="button"
+                    onClick={() => coverInputRef.current?.click()}
+                    disabled={coverUploading}
+                    className="text-[11px] font-bold text-secondary hover:text-primary flex items-center gap-1 transition-colors"
+                  >
+                    {coverUploading ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <Upload className="w-3 h-3" />
+                    )}
+                    <span>{coverUploading ? "Uploading..." : "Upload from PC"}</span>
+                  </button>
+                  <input
+                    ref={coverInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverUpload}
+                    className="hidden"
+                  />
+                </div>
                 <input
                   type="url"
                   value={coverImage}
                   onChange={(e) => setCoverImage(e.target.value)}
-                  placeholder="https://images.unsplash.com/... or cloud asset"
+                  placeholder="https://... or click 'Upload from PC'"
                   className="w-full px-3.5 py-2.5 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background font-mono"
                 />
               </div>
@@ -380,19 +530,21 @@ export default function AdminBlogPage() {
                   >
                     <Quote className="w-3.5 h-3.5" />
                   </button>
+                  {/* Fixed Bullet List with Multiline support */}
                   <button
                     type="button"
-                    onClick={() => insertTextAtCursor("- ", "", "Key deliverable or bullet point")}
-                    className="p-1.5 rounded hover:bg-surface-white border border-transparent hover:border-border text-text-secondary hover:text-text-primary"
-                    title="Bullet List"
+                    onClick={() => handleInsertList(false)}
+                    className="p-1.5 rounded hover:bg-surface-white border border-transparent hover:border-border text-text-secondary hover:text-text-primary flex items-center gap-1 font-semibold"
+                    title="Bullet List (- item)"
                   >
                     <List className="w-3.5 h-3.5" />
                   </button>
+                  {/* Fixed Numbered List */}
                   <button
                     type="button"
-                    onClick={() => insertTextAtCursor("1. ", "", "Sequential step or milestone")}
-                    className="p-1.5 rounded hover:bg-surface-white border border-transparent hover:border-border text-text-secondary hover:text-text-primary"
-                    title="Numbered List"
+                    onClick={() => handleInsertList(true)}
+                    className="p-1.5 rounded hover:bg-surface-white border border-transparent hover:border-border text-text-secondary hover:text-text-primary flex items-center gap-1 font-semibold"
+                    title="Numbered List (1. item)"
                   >
                     <ListOrdered className="w-3.5 h-3.5" />
                   </button>
@@ -405,15 +557,18 @@ export default function AdminBlogPage() {
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <div className="w-px h-4 bg-border mx-1" />
-                  {/* Picture Addition */}
+                  {/* Picture Addition from PC */}
                   <button
                     type="button"
-                    onClick={() => setImageModalOpen(true)}
+                    onClick={() => {
+                      setImageTab("upload");
+                      setImageModalOpen(true);
+                    }}
                     className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-secondary/10 text-secondary hover:bg-secondary/20 font-semibold text-xs transition-colors"
-                    title="Insert Picture at Interval"
+                    title="Upload picture from PC or URL"
                   >
                     <ImageIcon className="w-3.5 h-3.5" />
-                    <span>Insert Picture</span>
+                    <span>Insert Picture (PC / URL)</span>
                   </button>
                   {/* Link Embedding */}
                   <button
@@ -431,7 +586,7 @@ export default function AdminBlogPage() {
                   <label className="text-xs font-bold uppercase text-text-muted flex items-center justify-between">
                     <span>Article Content</span>
                     <span className="text-[11px] font-normal text-text-muted">
-                      Supports markdown, picture intervals, and embedded links
+                      Use toolbar buttons to insert pictures, bullet lists, and links anywhere
                     </span>
                   </label>
                   <textarea
@@ -439,7 +594,7 @@ export default function AdminBlogPage() {
                     rows={14}
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder="Write article content here. Use the toolbar above to insert pictures at intervals, format headings, and embed links..."
+                    placeholder="Write article content here. Use the toolbar above to upload pictures from your PC at intervals, format headings, create bullet lists, and embed links..."
                     className="w-full p-4 rounded-xl border border-border text-xs font-mono leading-relaxed focus:outline-none focus:ring-1 focus:ring-primary bg-background resize-y"
                   />
                 </div>
@@ -460,7 +615,7 @@ export default function AdminBlogPage() {
                     <BlogContentRenderer content={content} />
                   ) : (
                     <p className="text-xs text-text-muted italic py-8 text-center">
-                      Content is empty. Type in the write tab to preview visuals and text.
+                      Content is empty. Type in the write tab to preview visuals, bullet points, and text.
                     </p>
                   )}
                 </div>
@@ -501,7 +656,7 @@ export default function AdminBlogPage() {
         </div>
       )}
 
-      {/* Picture Addition Modal */}
+      {/* Picture Addition Modal (Upload from PC or Web Link) */}
       {imageModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-surface-white rounded-2xl border border-border shadow-xl w-full max-w-md p-6 space-y-4">
@@ -512,29 +667,105 @@ export default function AdminBlogPage() {
                   Insert Picture at Interval
                 </h3>
                 <p className="text-xs text-text-muted mt-0.5">
-                  Embed diagrams, infometrics, or hero photos into your analysis.
+                  Upload photos, infometrics, or diagrams from your computer.
                 </p>
               </div>
-              <button
-                onClick={() => setImageModalOpen(false)}
-                className="text-text-muted hover:text-text-primary"
-              >
+              <button onClick={closeImageModal} className="text-text-muted hover:text-text-primary">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
+            {/* Mode Tabs: PC Upload vs Web Link */}
+            <div className="flex items-center gap-1 bg-surface-container-low p-1 rounded-lg border border-border text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => setImageTab("upload")}
+                className={`flex-1 py-1.5 rounded-md text-center transition-colors ${
+                  imageTab === "upload"
+                    ? "bg-surface-white text-primary font-bold shadow-sm"
+                    : "text-text-muted hover:text-text-primary"
+                }`}
+              >
+                Upload from PC
+              </button>
+              <button
+                type="button"
+                onClick={() => setImageTab("url")}
+                className={`flex-1 py-1.5 rounded-md text-center transition-colors ${
+                  imageTab === "url"
+                    ? "bg-surface-white text-primary font-bold shadow-sm"
+                    : "text-text-muted hover:text-text-primary"
+                }`}
+              >
+                Web Link (URL)
+              </button>
+            </div>
+
             <div className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-bold uppercase text-text-muted">Image Asset URL</label>
-                <input
-                  type="url"
-                  required
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  placeholder="https://example.com/growth-infographic.png"
-                  className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background font-mono"
-                />
-              </div>
+              {imageTab === "upload" ? (
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  {!filePreview ? (
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-2 border-dashed border-border hover:border-secondary/60 rounded-xl p-8 text-center cursor-pointer transition-colors bg-surface-container-low/40 hover:bg-surface-container-low space-y-2"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-secondary/15 text-secondary flex items-center justify-center mx-auto">
+                        <Upload className="w-5 h-5" />
+                      </div>
+                      <p className="text-xs font-bold text-text-primary">
+                        Click to select image from your computer
+                      </p>
+                      <p className="text-[11px] text-text-muted">
+                        Supports PNG, JPG, WEBP up to 10MB
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="relative rounded-xl overflow-hidden border border-border bg-surface-container-low max-h-48 flex items-center justify-center">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={filePreview}
+                          alt="Preview"
+                          className="w-full h-48 object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedFile(null);
+                            setFilePreview(null);
+                            if (fileInputRef.current) fileInputRef.current.value = "";
+                          }}
+                          className="absolute top-2 right-2 p-1 rounded-full bg-black/60 text-white hover:bg-black"
+                          title="Remove"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-text-muted text-center truncate">
+                        {selectedFile?.name} ({(selectedFile?.size ? selectedFile.size / 1024 : 0).toFixed(0)} KB)
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase text-text-muted">Image Asset URL</label>
+                  <input
+                    type="url"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    placeholder="https://images.unsplash.com/... or public image URL"
+                    className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background font-mono"
+                  />
+                </div>
+              )}
 
               <div className="space-y-1">
                 <label className="text-xs font-bold uppercase text-text-muted">Caption &amp; Alt Description</label>
@@ -542,7 +773,7 @@ export default function AdminBlogPage() {
                   type="text"
                   value={imageCaption}
                   onChange={(e) => setImageCaption(e.target.value)}
-                  placeholder="Figure 1: Full-funnel CAC vs LTV Cohort Retention"
+                  placeholder="e.g. Figure 1: CAC Payback Period Optimization"
                   className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background"
                 />
               </div>
@@ -551,18 +782,19 @@ export default function AdminBlogPage() {
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
-                onClick={() => setImageModalOpen(false)}
+                onClick={closeImageModal}
                 className="flex-1 px-4 py-2 rounded-lg border border-border text-xs font-semibold text-text-secondary hover:bg-surface-container-low transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="button"
-                onClick={handleInsertImage}
-                disabled={!imageUrl.trim()}
-                className="flex-1 px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors disabled:opacity-50"
+                onClick={handleConfirmInsertImage}
+                disabled={uploadingImage || (imageTab === "upload" ? !selectedFile : !imageUrl.trim())}
+                className="flex-1 px-4 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                Insert Picture
+                {uploadingImage && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                <span>{uploadingImage ? "Uploading..." : "Insert Picture"}</span>
               </button>
             </div>
           </div>

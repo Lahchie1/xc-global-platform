@@ -1,18 +1,11 @@
 import Link from "next/link";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { marketingGrowthServices } from "@/lib/data/servicesData";
 import {
-  TrendingUp,
-  Target,
-  BarChart3,
-  Search,
-  ShoppingCart,
-  Zap,
-  CheckCircle2,
   ArrowRight,
   ArrowLeft,
-  ShieldCheck,
-  Layers,
+  ChevronRight,
   Sparkles,
 } from "lucide-react";
 import type { Metadata } from "next";
@@ -24,81 +17,6 @@ export const metadata: Metadata = {
 };
 
 export default function MarketingGrowthPage() {
-  const capabilities = [
-    {
-      title: "Go-to-Market (GTM) Strategy",
-      description:
-        "Structured launch strategies, competitive analysis, customer segmentation, and market entry roadmaps that clarify positioning and accelerate product adoption.",
-      deliverables: [
-        "Ideal Customer Profile (ICP) definition",
-        "Market sizing & competitor gap analysis",
-        "Channel prioritization & launch milestones",
-        "Value proposition & core messaging matrix",
-      ],
-      icon: Target,
-    },
-    {
-      title: "Paid Media & Performance Acquisition",
-      description:
-        "High-performance customer acquisition across Google, Meta, TikTok, LinkedIn, and programmatic channels designed to maximize ROAS and lower blended CAC.",
-      deliverables: [
-        "Full-funnel campaign architecture & creative testing",
-        "First-party data tracking & Meta CAPI integration",
-        "Real-time spend pacing & bid optimization",
-        "Continuous audience retargeting & lookalike models",
-      ],
-      icon: BarChart3,
-    },
-    {
-      title: "Conversion Rate Optimisation (CRO)",
-      description:
-        "Data-driven experimentation, behavioral UX audits, and high-converting landing page engineering to turn existing traffic into paying customers.",
-      deliverables: [
-        "A/B & multivariate landing page testing",
-        "Checkout friction & cart abandonment analysis",
-        "Heatmap, session recording & click-depth audits",
-        "Conversion copywriting & social proof architecture",
-      ],
-      icon: Zap,
-    },
-    {
-      title: "E-Commerce & Shopify Store Growth",
-      description:
-        "Turn e-commerce stores into scale-ready revenue engines with tailored store setups, average order value (AOV) levers, and retention flows.",
-      deliverables: [
-        "Shopify custom architecture & speed optimization",
-        "One-click upsell & bundle merchandising",
-        "Subscription model integration (Recharge, etc.)",
-        "Email & SMS lifecycle automation (Klaviyo)",
-      ],
-      icon: ShoppingCart,
-    },
-    {
-      title: "Search Engine Optimization (SEO) & Content",
-      description:
-        "Sustainable inbound organic growth through technical SEO audits, high-intent keyword clustering, and authoritative content engines.",
-      deliverables: [
-        "Technical site health & Core Web Vitals remediation",
-        "Keyword gap & search intent mapping",
-        "High-converting blog & resource hubs",
-        "Structured schema & internal link graph architecture",
-      ],
-      icon: Search,
-    },
-    {
-      title: "Marketing Analytics & Attribution Modeling",
-      description:
-        "Gain absolute clarity on where revenue originates with verified multi-touch attribution, custom dashboards, and server-side tracking.",
-      deliverables: [
-        "GA4 custom event tracking & BigQuery pipelines",
-        "Blended CAC & LTV cohort reporting",
-        "Post-purchase attribution surveys",
-        "Executive BI dashboards for leadership & investors",
-      ],
-      icon: TrendingUp,
-    },
-  ];
-
   const processSteps = [
     {
       step: "01",
@@ -177,55 +95,59 @@ export default function MarketingGrowthPage() {
           </div>
         </section>
 
-        {/* Capabilities Grid */}
+        {/* All 9 Marketing & Growth Services */}
         <section className="max-w-7xl mx-auto px-6 lg:px-12 pb-20">
           <div className="mb-10 space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-accent-gold">
               Service Provisions
             </span>
             <h2 className="text-2xl sm:text-3xl font-bold text-text-primary">
-              What We Deliver
+              All 9 Marketing &amp; Growth Services
             </h2>
             <p className="text-sm text-text-secondary max-w-2xl">
-              Comprehensive capabilities covering every layer of modern marketing, acquisition, and revenue growth.
+              Comprehensive capabilities covering every layer of modern marketing, acquisition, and revenue growth. Select any service to explore full deliverables, methodology, and engagement options.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {capabilities.map((item, idx) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={idx}
-                  className="bg-surface-white rounded-2xl border border-border p-7 shadow-card hover:shadow-md transition-all flex flex-col justify-between"
-                >
-                  <div className="space-y-4">
-                    <div className="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary">
-                      <Icon className="w-6 h-6 text-accent-gold" />
-                    </div>
-                    <h3 className="text-lg font-bold text-text-primary">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                      {item.description}
-                    </p>
-                    <div className="pt-3 border-t border-border/60 space-y-2">
-                      <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted">
-                        Key Deliverables
-                      </p>
-                      <ul className="space-y-1.5">
-                        {item.deliverables.map((del, dIdx) => (
-                          <li key={dIdx} className="flex items-start gap-2 text-xs text-text-secondary">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-status-success shrink-0 mt-0.5" />
-                            <span>{del}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+            {marketingGrowthServices.map((service, index) => (
+              <Link
+                key={service.slug}
+                href={`/services/${service.slug}`}
+                className="group bg-surface-white rounded-2xl border border-border p-7 shadow-card hover:shadow-md hover:border-accent-gold/50 transition-all flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-bold text-accent-gold bg-surface-container-low px-2.5 py-1 rounded-md border border-border/60">
+                      01.{index + 1}
+                    </span>
+                    <span className="text-xs font-semibold text-text-muted group-hover:text-accent-gold flex items-center gap-1 transition-colors">
+                      <span>View Details</span>
+                      <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </div>
+
+                  <h3 className="text-lg font-bold text-text-primary group-hover:text-accent-gold transition-colors pt-1">
+                    {service.title}
+                  </h3>
+
+                  <p className="text-xs font-medium text-text-muted">
+                    {service.tagline}
+                  </p>
+
+                  <p className="text-xs sm:text-sm text-text-secondary leading-relaxed pt-1">
+                    {service.shortDescription}
+                  </p>
                 </div>
-              );
-            })}
+
+                <div className="pt-5 mt-5 border-t border-border/60 flex items-center justify-between text-xs text-text-primary font-semibold">
+                  <span>{service.deliverables.length} core deliverables</span>
+                  <span className="w-7 h-7 rounded-full bg-surface-container-low flex items-center justify-center text-text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
 
