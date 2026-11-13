@@ -7,6 +7,7 @@ import {
   Users,
   BookOpen,
   Shield,
+  Mail,
 } from "lucide-react";
 
 const navItems = [
@@ -14,6 +15,7 @@ const navItems = [
   { name: "Onboarding Submissions", href: "/admin/submissions", icon: FileCheck2 },
   { name: "Manage Users & Roles", href: "/admin/users", icon: Users },
   { name: "Blog & Publications", href: "/admin/blog", icon: BookOpen },
+  { name: "Emails", href: "/admin/emails", icon: Mail },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
