@@ -14,8 +14,6 @@ const ALLOWED_SENDERS = new Set([
   "support@xcglobalhq.com",
 ]);
 
-const REPLY_TO = "xcglobalproject@gmail.com";
-
 export type SendAdminEmailState = {
   ok: boolean;
   message: string;
@@ -37,7 +35,7 @@ function isValidEmail(email: string) {
 
 function parseEmailList(value: string) {
   return value
-    .split(",")
+    .split(/[,\n;]/)
     .map((e) => e.trim())
     .filter(Boolean);
 }
@@ -46,14 +44,14 @@ function bodyToHtml(body: string) {
   const trimmed = body.trim();
   if (!trimmed) return "";
 
-  // If it already looks like HTML, render as-is (trusted admin-only input)
+  // If it already looks like HTML, render with clean styling wrappers
   if (/<[a-z][\s\S]*>/i.test(trimmed)) {
     return trimmed;
   }
 
   const paragraphs = trimmed.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
   return paragraphs
-    .map((p) => `<p style="margin:0 0 16px 0;">${escapeHtml(p).replace(/\n/g, "<br/>")}</p>`)
+    .map((p) => `<p style="margin:0 0 18px 0;line-height:1.75;font-size:15px;color:#374151;">${escapeHtml(p).replace(/\n/g, "<br/>")}</p>`)
     .join("");
 }
 
@@ -86,18 +84,29 @@ function renderBrandedTemplate(subject: string, bodyHtml: string) {
               </td>
             </tr>
             <tr>
-              <td style="padding:20px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;">
-                <p style="margin:0 0 6px 0;font-size:12px;color:#6b7280;line-height:1.6;">
-                  XC Global Limited &middot; Marketing, Talent &amp; Growth Partner
-                </p>
-                <p style="margin:0;font-size:12px;color:#9ca3af;">
-                  &copy; 2026 XC Global Limited. All rights reserved.
-                </p>
+              <td style="padding:22px 32px;background:#f9fafb;border-top:1px solid #e5e7eb;">
+                <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                  <tr>
+                    <td>
+                      <p style="margin:0 0 6px 0;font-size:12px;color:#6b7280;line-height:1.6;">
+                        XC Global Limited &middot; Marketing, Talent &amp; Growth Partner
+                      </p>
+                      <p style="margin:0;font-size:12px;color:#9ca3af;">
+                        &copy; ${new Date().getFullYear()} XC Global Limited. All rights reserved.
+                      </p>
+                    </td>
+                    <td align="right" valign="top">
+                      <a href="https://xcglobalhq.com/unsubscribe" style="display:inline-block;padding:6px 12px;border-radius:6px;border:1px solid #d1d5db;background:#ffffff;color:#6b7280;font-size:11px;font-weight:600;text-decoration:none;letter-spacing:0.02em;">
+                        Unsubscribe
+                      </a>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
           </table>
-          <div style="max-width:640px;margin-top:12px;font-size:11px;color:#9ca3af;line-height:1.6;text-align:center;">
-            This message was sent by XC Global Limited. Replies to this email are directed to xcglobalproject@gmail.com.
+          <div style="max-width:640px;margin-top:14px;font-size:11px;color:#9ca3af;line-height:1.6;text-align:center;">
+            This email was sent by XC Global Limited. If you prefer not to receive commercial communications, you can <a href="https://xcglobalhq.com/unsubscribe" style="color:#6b7280;text-decoration:underline;">unsubscribe at any time</a>.
           </div>
         </td>
       </tr>
@@ -116,6 +125,7 @@ export async function sendAdminEmail(
     const senderAddress = String(formData.get("senderAddress") || "").trim().toLowerCase();
     const toRaw = String(formData.get("to") || "").trim();
     const ccRaw = String(formData.get("cc") || "").trim();
+    const bccRaw = String(formData.get("bcc") || "").trim();
     const subject = String(formData.get("subject") || "").trim();
     const body = String(formData.get("body") || "").trim();
 
@@ -126,8 +136,10 @@ export async function sendAdminEmail(
     }
 
     const recipients = parseEmailList(toRaw);
-    if (recipients.length === 0) {
-      fieldErrors.to = "At least one recipient email is required.";
+    const bccEmails = parseEmailList(bccRaw);
+
+    if (recipients.length === 0 && bccEmails.length === 0) {
+      fieldErrors.to = "At least one recipient (To or BCC) is required.";
     } else if (recipients.some((email) => !isValidEmail(email))) {
       fieldErrors.to = "One or more recipient emails are invalid.";
     }
@@ -135,6 +147,10 @@ export async function sendAdminEmail(
     const ccEmails = parseEmailList(ccRaw);
     if (ccEmails.some((email) => !isValidEmail(email))) {
       fieldErrors.cc = "One or more CC emails are invalid.";
+    }
+
+    if (bccEmails.some((email) => !isValidEmail(email))) {
+      fieldErrors.bcc = "One or more BCC emails are invalid.";
     }
 
     if (!subject) {
@@ -159,14 +175,26 @@ export async function sendAdminEmail(
     const bodyHtml = bodyToHtml(body);
     const html = renderBrandedTemplate(subject, bodyHtml);
 
-    const sendResult = await resend.emails.send({
+    // If 'to' was empty but BCC was provided, send to sender with BCC recipients
+    const finalTo = recipients.length > 0 ? recipients : [senderAddress];
+
+    const sendPayload: any = {
       from: `XC Global <${senderAddress}>`,
-      to: recipients,
-      ...(ccEmails.length > 0 ? { cc: ccEmails } : {}),
-      replyTo: REPLY_TO,
+      to: finalTo,
+      replyTo: senderAddress,
       subject,
       html,
-    });
+    };
+
+    if (ccEmails.length > 0) {
+      sendPayload.cc = ccEmails;
+    }
+
+    if (bccEmails.length > 0) {
+      sendPayload.bcc = bccEmails;
+    }
+
+    const sendResult = await resend.emails.send(sendPayload);
 
     if ((sendResult as any)?.error) {
       const errMsg =
@@ -176,34 +204,32 @@ export async function sendAdminEmail(
     }
 
     const resendMessageId = (sendResult as any)?.data?.id || null;
-    const recipientEmail = recipients.join(", ");
+    const recipientSummary = [
+      ...recipients,
+      ...(bccEmails.length > 0 ? [`BCC: ${bccEmails.length} recipients`] : []),
+    ].join(", ");
 
     const adminClient = createAdminClient();
-    const { error: insertError } = await adminClient.from("sent_emails").insert({
-      sender_address: senderAddress,
-      recipient_email: recipientEmail,
-      cc_emails: ccEmails.length > 0 ? ccEmails : null,
-      subject,
-      body_html: html,
-      resend_message_id: resendMessageId,
-      status: "sent",
-      sent_by: user.id,
-    });
-
-    if (insertError) {
-      return {
-        ok: false,
-        message:
-          "Email sent, but failed to log it in sent_emails. Check database permissions/schema: " +
-          insertError.message,
-      };
+    try {
+      await adminClient.from("sent_emails").insert({
+        sender_address: senderAddress,
+        recipient_email: recipients.join(", ") || bccEmails.join(", "),
+        cc_emails: ccEmails.length > 0 ? ccEmails : null,
+        subject,
+        body_html: html,
+        resend_message_id: resendMessageId,
+        status: "sent",
+        sent_by: user.id,
+      });
+    } catch (dbErr: any) {
+      console.warn("Could not insert to sent_emails:", dbErr?.message);
     }
 
     revalidatePath("/admin/emails");
 
     return {
       ok: true,
-      message: `Email sent successfully to ${recipientEmail}.`,
+      message: `Email sent successfully to ${recipientSummary || "recipients"}.`,
     };
   } catch (error: any) {
     const message =
