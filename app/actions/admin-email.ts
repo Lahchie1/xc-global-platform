@@ -63,6 +63,14 @@ function renderBrandedTemplate(subject: string, bodyHtml: string) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${safeSubject}</title>
+    <style>
+      ul { list-style-type: disc !important; padding-left: 24px !important; margin: 14px 0 !important; }
+      ol { list-style-type: decimal !important; padding-left: 24px !important; margin: 14px 0 !important; }
+      li { margin-bottom: 6px !important; line-height: 1.6 !important; }
+      blockquote { border-left: 4px solid #DB833A !important; background: #f8fafc !important; padding: 12px 16px !important; margin: 16px 0 !important; font-style: italic !important; }
+      table { border-collapse: collapse !important; width: 100% !important; margin: 16px 0 !important; }
+      th, td { border: 1px solid #e2e8f0 !important; padding: 8px 12px !important; }
+    </style>
   </head>
   <body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111827;">
     <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">

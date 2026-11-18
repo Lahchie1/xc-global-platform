@@ -35,6 +35,10 @@ import {
   Upload,
   FileSpreadsheet,
   Code2,
+  Pilcrow,
+  Heading1,
+  Heading2,
+  Heading3,
 } from "lucide-react";
 import { sendAdminEmail, type SendAdminEmailState } from "@/app/actions/admin-email";
 
@@ -140,7 +144,18 @@ function buildPreviewHtml(subject: string, body: string) {
 
   return `<!DOCTYPE html>
 <html lang="en">
-  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /></head>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      ul { list-style-type: disc !important; padding-left: 24px !important; margin: 14px 0 !important; }
+      ol { list-style-type: decimal !important; padding-left: 24px !important; margin: 14px 0 !important; }
+      li { margin-bottom: 6px !important; line-height: 1.6 !important; }
+      blockquote { border-left: 4px solid #DB833A !important; background: #f8fafc !important; padding: 12px 16px !important; margin: 16px 0 !important; font-style: italic !important; }
+      table { border-collapse: collapse !important; width: 100% !important; margin: 16px 0 !important; }
+      th, td { border: 1px solid #e2e8f0 !important; padding: 8px 12px !important; }
+    </style>
+  </head>
   <body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111827;">
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color:#f3f4f6;padding:24px 12px;">
       <tr>
@@ -231,6 +246,28 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const csvInputRef = useRef<HTMLInputElement>(null);
   const savedSelectionRange = useRef<Range | null>(null);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+  const formatDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close menus on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node;
+      if (moreMenuRef.current && !moreMenuRef.current.contains(target)) {
+        setMoreMenuOpen(false);
+      }
+      if (formatDropdownRef.current && !formatDropdownRef.current.contains(target)) {
+        setFormatDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   // History state
   const [search, setSearch] = useState("");
@@ -293,6 +330,51 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
     document.execCommand("formatBlock", false, tag);
     setFormatBlockValue(label);
     setFormatDropdownOpen(false);
+    handleEditorInput();
+  };
+
+  const ensureEditorSelection = () => {
+    editorRef.current?.focus();
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || !editorRef.current?.contains(sel.anchorNode)) {
+      const range = document.createRange();
+      if (editorRef.current) {
+        range.selectNodeContents(editorRef.current);
+        range.collapse(false);
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+    }
+    return window.getSelection();
+  };
+
+  const handleBulletList = () => {
+    ensureEditorSelection();
+    const ok = document.execCommand("insertUnorderedList", false);
+    if (!ok && editorRef.current) {
+      document.execCommand("insertHTML", false, "<ul><li>List item</li></ul><p><br/></p>");
+    }
+    handleEditorInput();
+  };
+
+  const handleNumberedList = () => {
+    ensureEditorSelection();
+    const ok = document.execCommand("insertOrderedList", false);
+    if (!ok && editorRef.current) {
+      document.execCommand("insertHTML", false, "<ol><li>Numbered item</li></ol><p><br/></p>");
+    }
+    handleEditorInput();
+  };
+
+  const handleIndent = () => {
+    editorRef.current?.focus();
+    document.execCommand("indent", false);
+    handleEditorInput();
+  };
+
+  const handleOutdent = () => {
+    editorRef.current?.focus();
+    document.execCommand("outdent", false);
     handleEditorInput();
   };
 
@@ -752,13 +834,14 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
               </div>
 
               {/* Toolbar & Editor Box Container */}
-              <div className="rounded-xl border border-border bg-surface-white shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-primary/20">
-                {/* Visual Toolbar (Matches attached image) */}
+              <div className="relative rounded-xl border border-border bg-surface-white shadow-sm focus-within:ring-2 focus-within:ring-primary/20">
+                {/* Visual Toolbar (Sticky pinned 10px from top, matches user design) */}
                 {!isHtmlMode && (
-                  <div className="flex items-center px-3 py-2 border-b border-border bg-surface-white text-gray-700 gap-1 flex-wrap relative select-none">
+                  <div className="sticky top-[10px] z-20 flex items-center px-3 py-2 border-b border-border bg-surface-white/95 backdrop-blur-md text-gray-700 gap-1 flex-wrap select-none rounded-t-xl shadow-xs">
                     {/* Undo */}
                     <button
                       type="button"
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => execCmd("undo")}
                       className="p-1.5 rounded hover:bg-surface-container-low text-gray-600 hover:text-black transition-colors"
                       title="Undo"
@@ -769,6 +852,7 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     {/* Redo */}
                     <button
                       type="button"
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => execCmd("redo")}
                       className="p-1.5 rounded hover:bg-surface-container-low text-gray-600 hover:text-black transition-colors"
                       title="Redo"
@@ -779,49 +863,67 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     {/* Divider 1 */}
                     <div className="w-px h-5 bg-border mx-1" />
 
-                    {/* Format Dropdown (Paragraph, H1, H2, H3) */}
-                    <div className="relative">
+                    {/* Format Dropdown (Paragraph, H1, H2, H3) - Displays horizontally with icons */}
+                    <div ref={formatDropdownRef} className="relative">
                       <button
                         type="button"
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => {
                           setFormatDropdownOpen((v) => !v);
                           setMoreMenuOpen(false);
                         }}
-                        className="flex items-center gap-2 px-2.5 py-1 rounded text-xs font-medium text-gray-800 hover:bg-surface-container-low border border-transparent hover:border-border transition-colors"
+                        className="flex items-center gap-1.5 px-2 py-1 rounded text-xs font-semibold text-gray-800 hover:bg-surface-container-low border border-transparent hover:border-border transition-colors"
+                        title="Text Formatting Style"
                       >
                         <span>{formatBlockValue}</span>
                         <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
                       </button>
 
                       {formatDropdownOpen && (
-                        <div className="absolute left-0 top-full mt-1 w-36 bg-surface-white rounded-lg border border-border shadow-lg py-1 z-30">
+                        <div className="absolute left-0 top-full mt-1.5 flex items-center gap-1 p-1 bg-surface-white rounded-xl border border-border shadow-xl z-30 animate-in fade-in zoom-in-95">
                           <button
                             type="button"
+                            onMouseDown={(e) => e.preventDefault()}
                             onClick={() => handleFormatBlock("p", "Paragraph")}
-                            className="w-full text-left px-3 py-1.5 text-xs text-gray-800 hover:bg-surface-container-low font-normal"
+                            className={`p-1.5 rounded hover:bg-surface-container-low transition-colors ${
+                              formatBlockValue === "Paragraph" ? "bg-surface-container text-primary font-bold" : "text-gray-700"
+                            }`}
+                            title="Paragraph"
                           >
-                            Paragraph
+                            <Pilcrow className="w-4 h-4" />
                           </button>
                           <button
                             type="button"
+                            onMouseDown={(e) => e.preventDefault()}
                             onClick={() => handleFormatBlock("h1", "Header 1")}
-                            className="w-full text-left px-3 py-1.5 text-sm text-gray-900 hover:bg-surface-container-low font-bold"
+                            className={`p-1.5 rounded hover:bg-surface-container-low transition-colors ${
+                              formatBlockValue === "Header 1" ? "bg-surface-container text-primary font-bold" : "text-gray-700"
+                            }`}
+                            title="Header 1"
                           >
-                            Header 1
+                            <Heading1 className="w-4 h-4" />
                           </button>
                           <button
                             type="button"
+                            onMouseDown={(e) => e.preventDefault()}
                             onClick={() => handleFormatBlock("h2", "Header 2")}
-                            className="w-full text-left px-3 py-1.5 text-xs text-gray-900 hover:bg-surface-container-low font-bold"
+                            className={`p-1.5 rounded hover:bg-surface-container-low transition-colors ${
+                              formatBlockValue === "Header 2" ? "bg-surface-container text-primary font-bold" : "text-gray-700"
+                            }`}
+                            title="Header 2"
                           >
-                            Header 2
+                            <Heading2 className="w-4 h-4" />
                           </button>
                           <button
                             type="button"
+                            onMouseDown={(e) => e.preventDefault()}
                             onClick={() => handleFormatBlock("h3", "Header 3")}
-                            className="w-full text-left px-3 py-1.5 text-xs text-gray-900 hover:bg-surface-container-low font-semibold"
+                            className={`p-1.5 rounded hover:bg-surface-container-low transition-colors ${
+                              formatBlockValue === "Header 3" ? "bg-surface-container text-primary font-bold" : "text-gray-700"
+                            }`}
+                            title="Header 3"
                           >
-                            Header 3
+                            <Heading3 className="w-4 h-4" />
                           </button>
                         </div>
                       )}
@@ -833,6 +935,7 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     {/* Bold */}
                     <button
                       type="button"
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => execCmd("bold")}
                       className="px-2 py-1 rounded hover:bg-surface-container-low text-gray-900 font-bold text-sm transition-colors"
                       title="Bold (Ctrl+B)"
@@ -843,6 +946,7 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     {/* Italic */}
                     <button
                       type="button"
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => execCmd("italic")}
                       className="px-2 py-1 rounded hover:bg-surface-container-low text-gray-900 italic font-serif text-sm transition-colors"
                       title="Italic (Ctrl+I)"
@@ -856,9 +960,10 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     {/* Link */}
                     <button
                       type="button"
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={openLinkModal}
                       className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
-                      title="Insert or Embed Link on Word"
+                      title="Insert Link"
                     >
                       <Link2 className="w-4 h-4" />
                     </button>
@@ -866,10 +971,11 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     {/* Image Upload from PC */}
                     <button
                       type="button"
+                      onMouseDown={(e) => e.preventDefault()}
                       onClick={() => imageInputRef.current?.click()}
                       disabled={isUploadingImage}
                       className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors flex items-center gap-1"
-                      title="Upload and Insert Picture from Computer"
+                      title="Upload Image from PC"
                     >
                       {isUploadingImage ? (
                         <Loader2 className="w-4 h-4 animate-spin text-secondary" />
@@ -885,13 +991,90 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                       className="hidden"
                     />
 
-                    {/* Divider 4 */}
-                    <div className="w-px h-5 bg-border mx-1" />
+                    {/* Divider 4 (Desktop only) */}
+                    <div className="hidden md:block w-px h-5 bg-border mx-1" />
 
-                    {/* 3-dots more menu */}
-                    <div className="relative">
+                    {/* Desktop Direct Toolbar (Shown when space is available, hides 3-dots) */}
+                    <div className="hidden md:flex items-center gap-1">
                       <button
                         type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={insertTable}
+                        className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
+                        title="Insert Table (3x3)"
+                      >
+                        <TableIcon className="w-4 h-4 text-secondary" />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={insertQuote}
+                        className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
+                        title="Quote Block"
+                      >
+                        <QuoteIcon className="w-4 h-4 text-accent-gold" />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          saveRange();
+                          setVideoModalOpen(true);
+                        }}
+                        className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
+                        title="Add Video Link"
+                      >
+                        <VideoIcon className="w-4 h-4 text-primary" />
+                      </button>
+
+                      <div className="w-px h-5 bg-border mx-1" />
+
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={handleBulletList}
+                        className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
+                        title="Bullet Points"
+                      >
+                        <ListIcon className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={handleNumberedList}
+                        className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
+                        title="Numbered List"
+                      >
+                        <ListOrderedIcon className="w-4 h-4" />
+                      </button>
+
+                      <div className="w-px h-5 bg-border mx-1" />
+
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={handleOutdent}
+                        className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
+                        title="Decrease Indent"
+                      >
+                        <OutdentIcon className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={handleIndent}
+                        className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 hover:text-black transition-colors"
+                        title="Increase Indent"
+                      >
+                        <IndentIcon className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Mobile / Compact Screens Only: 3-dots more menu */}
+                    <div ref={moreMenuRef} className="relative md:hidden">
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => {
                           setMoreMenuOpen((v) => !v);
                           setFormatDropdownOpen(false);
@@ -903,87 +1086,92 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                       </button>
 
                       {moreMenuOpen && (
-                        <div className="absolute right-0 top-full mt-1 w-52 bg-surface-white rounded-xl border border-border shadow-xl py-1.5 z-30 divide-y divide-border/60">
-                          <div className="py-1">
-                            <button
-                              type="button"
-                              onClick={insertTable}
-                              className="w-full text-left px-3.5 py-1.5 text-xs text-text-primary hover:bg-surface-container-low flex items-center gap-2"
-                            >
-                              <TableIcon className="w-3.5 h-3.5 text-secondary" />
-                              <span>Insert Table (3x3)</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={insertQuote}
-                              className="w-full text-left px-3.5 py-1.5 text-xs text-text-primary hover:bg-surface-container-low flex items-center gap-2"
-                            >
-                              <QuoteIcon className="w-3.5 h-3.5 text-accent-gold" />
-                              <span>Quote Block</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                saveRange();
-                                setMoreMenuOpen(false);
-                                setVideoModalOpen(true);
-                              }}
-                              className="w-full text-left px-3.5 py-1.5 text-xs text-text-primary hover:bg-surface-container-low flex items-center gap-2"
-                            >
-                              <VideoIcon className="w-3.5 h-3.5 text-primary" />
-                              <span>Add Video Link</span>
-                            </button>
-                          </div>
-
-                          <div className="py-1">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                execCmd("insertUnorderedList");
-                                setMoreMenuOpen(false);
-                              }}
-                              className="w-full text-left px-3.5 py-1.5 text-xs text-text-primary hover:bg-surface-container-low flex items-center gap-2"
-                            >
-                              <ListIcon className="w-3.5 h-3.5 text-text-muted" />
-                              <span>Bullet Points</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                execCmd("insertOrderedList");
-                                setMoreMenuOpen(false);
-                              }}
-                              className="w-full text-left px-3.5 py-1.5 text-xs text-text-primary hover:bg-surface-container-low flex items-center gap-2"
-                            >
-                              <ListOrderedIcon className="w-3.5 h-3.5 text-text-muted" />
-                              <span>Numbered List</span>
-                            </button>
-                          </div>
-
-                          <div className="py-1">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                execCmd("indent");
-                                setMoreMenuOpen(false);
-                              }}
-                              className="w-full text-left px-3.5 py-1.5 text-xs text-text-primary hover:bg-surface-container-low flex items-center gap-2"
-                            >
-                              <IndentIcon className="w-3.5 h-3.5 text-text-muted" />
-                              <span>Increase Indent</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                execCmd("outdent");
-                                setMoreMenuOpen(false);
-                              }}
-                              className="w-full text-left px-3.5 py-1.5 text-xs text-text-primary hover:bg-surface-container-low flex items-center gap-2"
-                            >
-                              <OutdentIcon className="w-3.5 h-3.5 text-text-muted" />
-                              <span>Decrease Indent</span>
-                            </button>
-                          </div>
+                        <div className="absolute right-0 top-full mt-1.5 flex items-center gap-1 p-1.5 bg-surface-white rounded-xl border border-border shadow-xl z-30 max-w-[calc(100vw-32px)] overflow-x-auto animate-in fade-in zoom-in-95">
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => {
+                              insertTable();
+                              setMoreMenuOpen(false);
+                            }}
+                            className="p-1.5 rounded hover:bg-surface-container-low text-secondary transition-colors"
+                            title="Table (3x3)"
+                          >
+                            <TableIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => {
+                              insertQuote();
+                              setMoreMenuOpen(false);
+                            }}
+                            className="p-1.5 rounded hover:bg-surface-container-low text-accent-gold transition-colors"
+                            title="Quote Block"
+                          >
+                            <QuoteIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => {
+                              saveRange();
+                              setMoreMenuOpen(false);
+                              setVideoModalOpen(true);
+                            }}
+                            className="p-1.5 rounded hover:bg-surface-container-low text-primary transition-colors"
+                            title="Add Video Link"
+                          >
+                            <VideoIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => {
+                              handleBulletList();
+                              setMoreMenuOpen(false);
+                            }}
+                            className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 transition-colors"
+                            title="Bullet Points"
+                          >
+                            <ListIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => {
+                              handleNumberedList();
+                              setMoreMenuOpen(false);
+                            }}
+                            className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 transition-colors"
+                            title="Numbered List"
+                          >
+                            <ListOrderedIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => {
+                              handleOutdent();
+                              setMoreMenuOpen(false);
+                            }}
+                            className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 transition-colors"
+                            title="Decrease Indent"
+                          >
+                            <OutdentIcon className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onMouseDown={(e) => e.preventDefault()}
+                            onClick={() => {
+                              handleIndent();
+                              setMoreMenuOpen(false);
+                            }}
+                            className="p-1.5 rounded hover:bg-surface-container-low text-gray-700 transition-colors"
+                            title="Increase Indent"
+                          >
+                            <IndentIcon className="w-4 h-4" />
+                          </button>
                         </div>
                       )}
                     </div>
@@ -996,14 +1184,14 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     rows={12}
-                    className="w-full p-4 font-mono text-xs text-text-primary bg-background focus:outline-none resize-y min-h-[260px]"
+                    className="w-full p-4 font-mono text-xs text-text-primary bg-background focus:outline-none resize-y min-h-[260px] max-h-[480px] overflow-y-auto rounded-b-xl"
                   />
                 ) : (
                   <div
                     ref={editorRef}
                     contentEditable
                     onInput={handleEditorInput}
-                    className="p-5 min-h-[260px] text-sm text-text-primary focus:outline-none leading-relaxed space-y-4 empty:before:content-['Type_your_message_here...'] empty:before:text-text-muted select-text"
+                    className="p-5 min-h-[260px] max-h-[480px] overflow-y-auto rounded-b-xl text-sm text-text-primary focus:outline-none leading-relaxed space-y-3 empty:before:content-['Type_your_message_here...'] empty:before:text-text-muted select-text [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_ol]:space-y-1 [&_li]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-[#DB833A] [&_blockquote]:bg-surface-container-low [&_blockquote]:px-4 [&_blockquote]:py-3 [&_blockquote]:my-3 [&_blockquote]:rounded-r-lg [&_blockquote]:italic [&_table]:w-full [&_table]:border-collapse [&_table]:my-3 [&_th]:border [&_th]:border-border [&_th]:p-2 [&_th]:bg-surface-container-low [&_td]:border [&_td]:border-border [&_td]:p-2"
                     style={{
                       lineHeight: "1.75",
                     }}
