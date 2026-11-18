@@ -39,6 +39,13 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  ArrowUp,
+  ArrowDown,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Trash2,
+  Move,
 } from "lucide-react";
 import { sendAdminEmail, type SendAdminEmailState } from "@/app/actions/admin-email";
 
@@ -249,15 +256,29 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
   const moreMenuRef = useRef<HTMLDivElement>(null);
   const formatDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close menus on click outside
+  // Image selection and drag/move state
+  const [selectedImg, setSelectedImg] = useState<HTMLImageElement | null>(null);
+  const [imgControlsPos, setImgControlsPos] = useState<{ top: number; left: number } | null>(null);
+  const draggedNodeRef = useRef<HTMLElement | null>(null);
+
+  // Close menus and deselect image on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      const target = event.target as Node;
+      const target = event.target as HTMLElement;
       if (moreMenuRef.current && !moreMenuRef.current.contains(target)) {
         setMoreMenuOpen(false);
       }
       if (formatDropdownRef.current && !formatDropdownRef.current.contains(target)) {
         setFormatDropdownOpen(false);
+      }
+      if (selectedImg && !target.closest(".img-controls-bar") && target.tagName !== "IMG") {
+        if (editorRef.current) {
+          editorRef.current.querySelectorAll("img").forEach((el) => {
+            el.classList.remove("ring-4", "ring-primary/60", "ring-offset-2");
+          });
+        }
+        setSelectedImg(null);
+        setImgControlsPos(null);
       }
     };
 
@@ -267,7 +288,7 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, []);
+  }, [selectedImg]);
 
   // History state
   const [search, setSearch] = useState("");
@@ -423,7 +444,7 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
       editorRef.current?.focus();
       restoreRange();
 
-      const imgHtml = `<p style="margin:16px 0;"><img src="${data.url}" alt="Uploaded visual" style="max-width:100%;height:auto;border-radius:10px;display:block;border:1px solid #e5e7eb;" /></p><p><br/></p>`;
+      const imgHtml = `<p style="margin:16px 0;text-align:center;"><img src="${data.url}" alt="Uploaded visual" draggable="true" style="max-width:100%;height:auto;border-radius:10px;display:inline-block;border:1px solid #e5e7eb;cursor:grab;" /></p><p><br/></p>`;
       document.execCommand("insertHTML", false, imgHtml);
       handleEditorInput();
     } catch (err: any) {
@@ -431,6 +452,191 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
     } finally {
       setIsUploadingImage(false);
       if (imageInputRef.current) imageInputRef.current.value = "";
+    }
+  };
+
+  // Image placement, alignment and movement handlers
+  const updateImgControlsPos = (img: HTMLImageElement) => {
+    if (!editorRef.current) return;
+    const editorRect = editorRef.current.getBoundingClientRect();
+    const imgRect = img.getBoundingClientRect();
+
+    const top = imgRect.top - editorRect.top + editorRef.current.scrollTop + 8;
+    const left = Math.max(12, Math.min(
+      imgRect.left - editorRect.left + (imgRect.width / 2) - 150,
+      editorRect.width - 320
+    ));
+
+    setImgControlsPos({ top: Math.max(12, top), left: Math.max(12, left) });
+  };
+
+  const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "IMG" && editorRef.current?.contains(target)) {
+      const img = target as HTMLImageElement;
+      editorRef.current.querySelectorAll("img").forEach((el) => {
+        el.classList.remove("ring-4", "ring-primary/60", "ring-offset-2");
+      });
+      img.classList.add("ring-4", "ring-primary/60", "ring-offset-2");
+      setSelectedImg(img);
+      updateImgControlsPos(img);
+    } else if (!target.closest(".img-controls-bar")) {
+      if (editorRef.current) {
+        editorRef.current.querySelectorAll("img").forEach((el) => {
+          el.classList.remove("ring-4", "ring-primary/60", "ring-offset-2");
+        });
+      }
+      setSelectedImg(null);
+      setImgControlsPos(null);
+    }
+  };
+
+  const moveImgUp = () => {
+    if (!selectedImg || !editorRef.current) return;
+    const parent = selectedImg.closest("p, figure, div") || selectedImg;
+    const prev = parent.previousElementSibling;
+    if (prev && editorRef.current.contains(prev)) {
+      editorRef.current.insertBefore(parent, prev);
+      handleEditorInput();
+      setTimeout(() => {
+        if (selectedImg) updateImgControlsPos(selectedImg);
+      }, 20);
+    }
+  };
+
+  const moveImgDown = () => {
+    if (!selectedImg || !editorRef.current) return;
+    const parent = selectedImg.closest("p, figure, div") || selectedImg;
+    const next = parent.nextElementSibling;
+    if (next && editorRef.current.contains(next)) {
+      editorRef.current.insertBefore(parent, next.nextElementSibling);
+      handleEditorInput();
+      setTimeout(() => {
+        if (selectedImg) updateImgControlsPos(selectedImg);
+      }, 20);
+    }
+  };
+
+  const alignImg = (alignment: "left" | "center" | "right") => {
+    if (!selectedImg) return;
+    const parent = selectedImg.closest("p, figure, div") as HTMLElement | null;
+    if (parent && parent !== editorRef.current) {
+      parent.style.textAlign = alignment;
+      parent.style.margin = "16px 0";
+    }
+    selectedImg.style.display = alignment === "center" ? "block" : "inline-block";
+    if (alignment === "center") {
+      selectedImg.style.marginLeft = "auto";
+      selectedImg.style.marginRight = "auto";
+    } else if (alignment === "right") {
+      selectedImg.style.marginLeft = "auto";
+      selectedImg.style.marginRight = "0";
+    } else {
+      selectedImg.style.marginLeft = "0";
+      selectedImg.style.marginRight = "auto";
+    }
+    handleEditorInput();
+    setTimeout(() => {
+      if (selectedImg) updateImgControlsPos(selectedImg);
+    }, 20);
+  };
+
+  const resizeImg = (width: "50%" | "100%") => {
+    if (!selectedImg) return;
+    selectedImg.style.width = width;
+    selectedImg.style.maxWidth = "100%";
+    selectedImg.style.height = "auto";
+    handleEditorInput();
+    setTimeout(() => {
+      if (selectedImg) updateImgControlsPos(selectedImg);
+    }, 20);
+  };
+
+  const deleteImg = () => {
+    if (!selectedImg) return;
+    const parent = selectedImg.closest("p, figure, div");
+    if (parent && parent !== editorRef.current && parent.childNodes.length <= 1) {
+      parent.remove();
+    } else {
+      selectedImg.remove();
+    }
+    setSelectedImg(null);
+    setImgControlsPos(null);
+    handleEditorInput();
+  };
+
+  // Drag and drop handlers for moving images inside editor
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "IMG") {
+      const parent = target.closest("p, figure, div");
+      const nodeToMove = parent && parent !== editorRef.current && parent.childNodes.length <= 1 ? parent : target;
+      draggedNodeRef.current = nodeToMove as HTMLElement;
+      target.style.opacity = "0.5";
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/html", target.outerHTML);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    if (draggedNodeRef.current) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!draggedNodeRef.current || !editorRef.current) return;
+    e.preventDefault();
+
+    const nodeToMove = draggedNodeRef.current;
+    let range: Range | null = null;
+
+    if (typeof document.caretRangeFromPoint === "function") {
+      range = document.caretRangeFromPoint(e.clientX, e.clientY);
+    } else if ((document as any).caretPositionFromPoint) {
+      const pos = (document as any).caretPositionFromPoint(e.clientX, e.clientY);
+      if (pos) {
+        range = document.createRange();
+        range.setStart(pos.offsetNode, pos.offset);
+        range.collapse(true);
+      }
+    }
+
+    if (range && editorRef.current.contains(range.startContainer)) {
+      range.insertNode(nodeToMove);
+      const sel = window.getSelection();
+      if (sel) {
+        const newRange = document.createRange();
+        newRange.setStartAfter(nodeToMove);
+        newRange.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(newRange);
+      }
+    }
+
+    const img = nodeToMove.tagName === "IMG" ? (nodeToMove as HTMLImageElement) : nodeToMove.querySelector("img");
+    if (img) {
+      img.style.opacity = "1";
+      setSelectedImg(img);
+      updateImgControlsPos(img);
+    }
+
+    draggedNodeRef.current = null;
+    handleEditorInput();
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    if (target.tagName === "IMG") {
+      target.style.opacity = "1";
+    }
+    draggedNodeRef.current = null;
+  };
+
+  const handleEditorScroll = () => {
+    if (selectedImg && editorRef.current?.contains(selectedImg)) {
+      updateImgControlsPos(selectedImg);
     }
   };
 
@@ -1179,6 +1385,111 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                 )}
 
                 {/* Editable Surface (contentEditable) */}
+                {/* Floating Image Action Bar (visible when an image is clicked/selected) */}
+                {selectedImg && imgControlsPos && (
+                  <div
+                    style={{ top: `${imgControlsPos.top}px`, left: `${imgControlsPos.left}px` }}
+                    className="img-controls-bar absolute z-30 flex items-center gap-1.5 p-1.5 rounded-xl bg-slate-900/95 backdrop-blur-md text-white shadow-2xl border border-white/10 text-xs animate-in fade-in zoom-in-95 select-none"
+                  >
+                    <div className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] uppercase tracking-wider font-bold text-accent-gold border-r border-white/15">
+                      <Move className="w-3 h-3" />
+                      <span>Drag / Move</span>
+                    </div>
+
+                    {/* Move Up */}
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={moveImgUp}
+                      className="p-1 rounded hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+                      title="Move Image Up"
+                    >
+                      <ArrowUp className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Move Down */}
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={moveImgDown}
+                      className="p-1 rounded hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+                      title="Move Image Down"
+                    >
+                      <ArrowDown className="w-3.5 h-3.5" />
+                    </button>
+
+                    <div className="w-px h-3.5 bg-white/15 mx-0.5" />
+
+                    {/* Align Left */}
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => alignImg("left")}
+                      className="p-1 rounded hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+                      title="Align Left"
+                    >
+                      <AlignLeft className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Align Center */}
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => alignImg("center")}
+                      className="p-1 rounded hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+                      title="Align Center"
+                    >
+                      <AlignCenter className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Align Right */}
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => alignImg("right")}
+                      className="p-1 rounded hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+                      title="Align Right"
+                    >
+                      <AlignRight className="w-3.5 h-3.5" />
+                    </button>
+
+                    <div className="w-px h-3.5 bg-white/15 mx-0.5" />
+
+                    {/* Size presets */}
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => resizeImg("50%")}
+                      className="px-1.5 py-0.5 rounded text-[10px] font-bold hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+                      title="Set width to 50%"
+                    >
+                      50%
+                    </button>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => resizeImg("100%")}
+                      className="px-1.5 py-0.5 rounded text-[10px] font-bold hover:bg-white/20 text-white/90 hover:text-white transition-colors"
+                      title="Set width to 100%"
+                    >
+                      100%
+                    </button>
+
+                    <div className="w-px h-3.5 bg-white/15 mx-0.5" />
+
+                    {/* Delete */}
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={deleteImg}
+                      className="p-1 rounded hover:bg-red-500/80 text-red-300 hover:text-white transition-colors"
+                      title="Remove Image"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
                 {isHtmlMode ? (
                   <textarea
                     value={body}
@@ -1191,7 +1502,13 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     ref={editorRef}
                     contentEditable
                     onInput={handleEditorInput}
-                    className="p-5 min-h-[260px] max-h-[480px] overflow-y-auto rounded-b-xl text-sm text-text-primary focus:outline-none leading-relaxed space-y-3 empty:before:content-['Type_your_message_here...'] empty:before:text-text-muted select-text [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_ol]:space-y-1 [&_li]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-[#DB833A] [&_blockquote]:bg-surface-container-low [&_blockquote]:px-4 [&_blockquote]:py-3 [&_blockquote]:my-3 [&_blockquote]:rounded-r-lg [&_blockquote]:italic [&_table]:w-full [&_table]:border-collapse [&_table]:my-3 [&_th]:border [&_th]:border-border [&_th]:p-2 [&_th]:bg-surface-container-low [&_td]:border [&_td]:border-border [&_td]:p-2"
+                    onClick={handleEditorClick}
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                    onDragEnd={handleDragEnd}
+                    onScroll={handleEditorScroll}
+                    className="p-5 min-h-[260px] max-h-[480px] overflow-y-auto rounded-b-xl text-sm text-text-primary focus:outline-none leading-relaxed space-y-3 empty:before:content-['Type_your_message_here...'] empty:before:text-text-muted select-text [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_ol]:space-y-1 [&_li]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-[#DB833A] [&_blockquote]:bg-surface-container-low [&_blockquote]:px-4 [&_blockquote]:py-3 [&_blockquote]:my-3 [&_blockquote]:rounded-r-lg [&_blockquote]:italic [&_table]:w-full [&_table]:border-collapse [&_table]:my-3 [&_th]:border [&_th]:border-border [&_th]:p-2 [&_th]:bg-surface-container-low [&_td]:border [&_td]:border-border [&_td]:p-2 [&_img]:cursor-grab [&_img]:active:cursor-grabbing hover:[&_img]:ring-2 hover:[&_img]:ring-primary/40 [&_img]:transition-all"
                     style={{
                       lineHeight: "1.75",
                     }}
