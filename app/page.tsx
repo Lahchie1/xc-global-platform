@@ -100,7 +100,7 @@ export default function HomePage() {
         {/* ── Trusted Brands Box (Placed Between Hero and Key Metrics) ── */}
         <section className="max-w-7xl mx-auto px-6 lg:px-12 -mt-8 sm:-mt-10 mb-4 relative z-20 w-full">
           <div className="bg-surface-white rounded-2xl border border-border shadow-elevation-1 p-6 sm:p-8">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="flex flex-col gap-6">
               <div className="flex items-center gap-3.5 shrink-0">
                 <div className="w-10 h-10 rounded-xl bg-surface-container-low border border-border flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-5 h-5 text-secondary" />
@@ -126,6 +126,8 @@ export default function HomePage() {
                   { name: "Seller Africa", sector: "Online Marketplace", url: "https://sellerafrica.com/" },
                   { name: "Euracare", sector: "Healthcare", url: "https://euracarehealth.com/" },
                   { name: "Mouka", sector: "Manufacturing", url: "https://mouka.com/" },
+                  { name: "BirthSafe", sector: "Healthtech", url: "https://birthsafeng.com/" },
+                  { name: "Wiremoney", sector: "Fintech", url: "https://www.wiremoney.com.au/" },
                 ].map((client) => (
                   <a
                     key={client.name}
