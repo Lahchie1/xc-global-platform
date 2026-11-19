@@ -21,6 +21,7 @@ import {
   Layers,
   Link as LinkIcon,
   Loader2,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -297,15 +298,19 @@ function TalentProfileContent() {
                 <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
                   Availability <span className="text-status-error">*</span>
                 </label>
-                <select
-                  value={profile.availability}
-                  onChange={(e) => setProfile({ ...profile, availability: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background"
-                >
-                  <option value="Immediate">Immediate</option>
-                  <option value="1 week">1 week</option>
-                  <option value="1 month">1 month</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={profile.availability}
+                    onChange={(e) => setProfile({ ...profile, availability: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background appearance-none pr-10"
+                  >
+                    <option value="">Select Availability</option>
+                    <option value="Immediate">Immediate</option>
+                    <option value="1 week">1 week</option>
+                    <option value="1 month">1 month</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                </div>
               </div>
 
               {/* Job Type Dropdown */}
@@ -313,17 +318,21 @@ function TalentProfileContent() {
                 <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
                   Job Type <span className="text-status-error">*</span>
                 </label>
-                <select
-                  value={profile.job_type}
-                  onChange={(e) => setProfile({ ...profile, job_type: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background"
-                >
-                  <option value="Full-time">Full-time</option>
-                  <option value="Part-time">Part-time</option>
-                  <option value="Contract">Contract</option>
-                  <option value="Internship">Internship</option>
-                  <option value="Temporary">Temporary</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={profile.job_type}
+                    onChange={(e) => setProfile({ ...profile, job_type: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background appearance-none pr-10"
+                  >
+                    <option value="">Select Job Type</option>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Internship">Internship</option>
+                    <option value="Temporary">Temporary</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                </div>
               </div>
 
               {/* Job Mode Dropdown */}
@@ -331,15 +340,19 @@ function TalentProfileContent() {
                 <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
                   Job Mode <span className="text-status-error">*</span>
                 </label>
-                <select
-                  value={profile.job_mode}
-                  onChange={(e) => setProfile({ ...profile, job_mode: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background"
-                >
-                  <option value="Remote">Remote</option>
-                  <option value="Hybrid">Hybrid</option>
-                  <option value="On-site">On-site</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={profile.job_mode}
+                    onChange={(e) => setProfile({ ...profile, job_mode: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background appearance-none pr-10"
+                  >
+                    <option value="">Select Job Mode</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="On-site">On-site</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                </div>
               </div>
             </div>
           </div>

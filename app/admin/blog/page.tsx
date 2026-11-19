@@ -13,6 +13,7 @@ import {
   Loader2,
   Bold,
   Italic,
+  Heading1,
   Heading2,
   Heading3,
   Quote,
@@ -26,6 +27,8 @@ import {
   ExternalLink,
   Upload,
   FileImage,
+  Save,
+  ChevronDown,
 } from "lucide-react";
 import { BlogPost } from "@/types/database";
 import { BlogContentRenderer } from "@/components/blog/BlogContentRenderer";
@@ -47,6 +50,7 @@ export default function AdminBlogPage() {
   const [published, setPublished] = useState(true);
   const [saving, setSaving] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
+  const [saveDropdownOpen, setSaveDropdownOpen] = useState(false);
 
   // Image Modal states
   const [imageModalOpen, setImageModalOpen] = useState(false);
@@ -109,25 +113,34 @@ export default function AdminBlogPage() {
     setIsEditorOpen(true);
   };
 
-  // Helper to insert markdown text at cursor position
+  // Helper to insert markdown text at cursor position with newline handling
   const insertTextAtCursor = (before: string, after: string = "", defaultText: string = "") => {
     const textarea = textareaRef.current;
     if (!textarea) {
-      setContent((prev) => prev + "\n\n" + before + defaultText + after);
+      setContent((prev) => prev + "\n\n" + before.trimStart() + defaultText + after);
       return;
     }
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selected = content.substring(start, end) || defaultText;
-    const replacement = before + selected + after;
 
+    // If `before` starts with \n, check if we're already at start of line or file
+    let prefix = before;
+    if (before.startsWith("\n")) {
+      if (start === 0 || content[start - 1] === "\n") {
+        prefix = before.replace(/^\n+/, "");
+      }
+    }
+
+    const replacement = prefix + selected + after;
     const newContent = content.substring(0, start) + replacement + content.substring(end);
     setContent(newContent);
 
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
+      const cursorPos = start + prefix.length;
+      textarea.setSelectionRange(cursorPos, cursorPos + selected.length);
     }, 50);
   };
 
@@ -155,13 +168,26 @@ export default function AdminBlogPage() {
             : `- ${l.replace(/^[-*•\d.]\s*/, "")}`
         )
         .join("\n");
-      const newContent = content.substring(0, start) + formatted + content.substring(end);
+      const needsPrefix = start > 0 && content[start - 1] !== "\n" ? "\n" : "";
+      const replacement = needsPrefix + formatted + "\n";
+      const newContent = content.substring(0, start) + replacement + content.substring(end);
       setContent(newContent);
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + needsPrefix.length, start + replacement.length);
+      }, 50);
     } else {
+      const needsPrefix = start > 0 && content[start - 1] !== "\n" ? "\n" : "";
       const template = ordered
-        ? "\n1. Step one\n2. Step two\n3. Step three\n"
-        : "\n- First point\n- Second point\n- Third point\n";
-      insertTextAtCursor(template, "", "");
+        ? `${needsPrefix}1. Step one\n2. Step two\n3. Step three\n`
+        : `${needsPrefix}- First point\n- Second point\n- Third point\n`;
+      const replacement = template;
+      const newContent = content.substring(0, start) + replacement + content.substring(end);
+      setContent(newContent);
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + replacement.length, start + replacement.length);
+      }, 50);
     }
   };
 
@@ -296,6 +322,74 @@ export default function AdminBlogPage() {
       setIsEditorOpen(false);
     } catch (err: any) {
       alert(err?.message || "Failed to save article");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveDraft = async () => {
+    if (!title.trim() || !slug.trim()) {
+      alert("Title and slug are required to save draft");
+      return;
+    }
+    setSaving(true);
+    try {
+      const payload = {
+        id: editingPostId,
+        title,
+        slug,
+        excerpt,
+        content,
+        cover_image: coverImage || null,
+        published: false,
+      };
+      const res = await fetch("/api/admin/blog", {
+        method: editingPostId ? "PATCH" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to save draft");
+      await fetchPosts();
+      setSaveDropdownOpen(false);
+      setIsEditorOpen(false);
+    } catch (err: any) {
+      alert(err?.message || "Failed to save draft");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!title.trim() || !slug.trim()) {
+      alert("Title and slug are required to save as template");
+      return;
+    }
+    setSaving(true);
+    try {
+      const templateTitle = title.startsWith("[TEMPLATE]") ? title : `[TEMPLATE] ${title}`;
+      const templateSlug = slug.startsWith("template-") ? slug : `template-${slug}`;
+      const payload = {
+        id: null,
+        title: templateTitle,
+        slug: templateSlug,
+        excerpt,
+        content,
+        cover_image: coverImage || null,
+        published: false,
+      };
+      const res = await fetch("/api/admin/blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to save template");
+      await fetchPosts();
+      setSaveDropdownOpen(false);
+      setIsEditorOpen(false);
+    } catch (err: any) {
+      alert(err?.message || "Failed to save template");
     } finally {
       setSaving(false);
     }
@@ -490,7 +584,15 @@ export default function AdminBlogPage() {
                   <span className="text-[10px] font-bold uppercase text-text-muted mr-1">Format:</span>
                   <button
                     type="button"
-                    onClick={() => insertTextAtCursor("## ", "", "Section Heading")}
+                    onClick={() => insertTextAtCursor("\n# ", "", "Main Heading")}
+                    className="p-1.5 rounded hover:bg-surface-white border border-transparent hover:border-border text-text-secondary hover:text-text-primary"
+                    title="Heading 1"
+                  >
+                    <Heading1 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => insertTextAtCursor("\n## ", "", "Section Heading")}
                     className="p-1.5 rounded hover:bg-surface-white border border-transparent hover:border-border text-text-secondary hover:text-text-primary"
                     title="Heading 2"
                   >
@@ -498,7 +600,7 @@ export default function AdminBlogPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => insertTextAtCursor("### ", "", "Subheading")}
+                    onClick={() => insertTextAtCursor("\n### ", "", "Subheading")}
                     className="p-1.5 rounded hover:bg-surface-white border border-transparent hover:border-border text-text-secondary hover:text-text-primary"
                     title="Heading 3"
                   >
@@ -624,16 +726,6 @@ export default function AdminBlogPage() {
 
             {/* Bottom Actions */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-border">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-text-primary">
-                <input
-                  type="checkbox"
-                  checked={published}
-                  onChange={(e) => setPublished(e.target.checked)}
-                  className="rounded border-border text-primary focus:ring-primary"
-                />
-                <span>Publish immediately to xcglobalhq.com/blog</span>
-              </label>
-
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -642,14 +734,87 @@ export default function AdminBlogPage() {
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-6 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors disabled:opacity-60 flex items-center gap-2 shadow-sm"
-                >
-                  {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                  <span>{editingPostId ? "Update Article" : "Publish Article"}</span>
-                </button>
+                {editorTab === "preview" && (
+                  <button
+                    type="button"
+                    onClick={() => setEditorTab("write")}
+                    className="px-4 py-2 rounded-lg border border-border text-xs font-semibold text-text-secondary hover:bg-surface-container-low transition-colors flex items-center gap-1.5"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>Back to Editor</span>
+                  </button>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Save Dropdown (Save as Draft / Save as Template) */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    disabled={saving}
+                    onClick={() => setSaveDropdownOpen((v) => !v)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border text-xs font-semibold text-text-primary hover:bg-surface-container-low transition-colors disabled:opacity-50"
+                  >
+                    <Save className="w-3.5 h-3.5 text-accent-gold" />
+                    <span>Save</span>
+                    <ChevronDown className="w-3 h-3 text-text-muted" />
+                  </button>
+
+                  {saveDropdownOpen && (
+                    <div className="absolute bottom-full mb-1.5 right-0 bg-surface-white border border-border rounded-xl shadow-xl z-30 min-w-[180px] overflow-hidden py-1">
+                      <button
+                        type="button"
+                        onClick={handleSaveDraft}
+                        className="w-full px-4 py-2.5 text-left text-xs font-semibold text-text-primary hover:bg-surface-container-low transition-colors flex items-center gap-2"
+                      >
+                        <Save className="w-3.5 h-3.5 text-text-muted" />
+                        <span>Save As Draft</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveTemplate}
+                        className="w-full px-4 py-2.5 text-left text-xs font-semibold text-text-primary hover:bg-surface-container-low transition-colors flex items-center gap-2 border-t border-border/50"
+                      >
+                        <FileImage className="w-3.5 h-3.5 text-text-muted" />
+                        <span>Save As Template</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Write Mode Action: Preview Blog */}
+                {editorTab === "write" ? (
+                  <button
+                    type="button"
+                    onClick={() => setEditorTab("preview")}
+                    className="px-6 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors flex items-center gap-2 shadow-sm"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-secondary" />
+                    <span>Preview Blog</span>
+                  </button>
+                ) : (
+                  /* Preview Mode Actions: Publish controls */
+                  <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-text-primary">
+                      <input
+                        type="checkbox"
+                        checked={published}
+                        onChange={(e) => setPublished(e.target.checked)}
+                        className="rounded border-border text-primary focus:ring-primary"
+                      />
+                      <span>Publish immediately to /blog</span>
+                    </label>
+
+                    <button
+                      type="submit"
+                      disabled={saving}
+                      className="px-6 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary-container transition-colors disabled:opacity-60 flex items-center gap-2 shadow-sm"
+                    >
+                      {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                      <span>{editingPostId ? "Update Article" : "Publish Article"}</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </form>

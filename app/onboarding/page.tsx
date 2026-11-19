@@ -14,6 +14,7 @@ import {
   Loader2,
   ShieldCheck,
   Check,
+  ChevronDown,
 } from "lucide-react";
 
 export default function OnboardingPage() {
@@ -23,10 +24,10 @@ export default function OnboardingPage() {
   const [formData, setFormData] = useState({
     company_name: "",
     website: "",
-    industry: "Fintech",
-    company_size: "11-50 employees",
+    industry: "",
+    company_size: "",
     location: "",
-    services_interested: ["Growth & Performance Marketing"],
+    services_interested: [] as string[],
     challenge_description: "",
     how_heard: "",
     contact_name: "",
@@ -40,12 +41,16 @@ export default function OnboardingPage() {
   const [submitted, setSubmitted] = useState(false);
 
   const availableServices = [
-    "Growth & Performance Marketing",
-    "Vetted Talent Placement (Embedded)",
-    "Fractional CMO / Executive Advisory",
-    "Marketing Training & Squad Upskilling",
-    "Conversion Rate Optimization (CRO)",
-    "Attribution & Data Pipeline Setup",
+    "Marketing & Growth Strategy",
+    "Paid Advertising (Google, Meta, TikTok)",
+    "Website & Conversion Optimisation",
+    "Content & Social Media Marketing",
+    "Branding & Creative Design",
+    "Talent Placement & Recruitment",
+    "Marketing Training & Team Development",
+    "Business Growth Advisory",
+    "Data & Analytics Setup",
+    "CAC Business Registration",
   ];
 
   const handleServiceToggle = (service: string) => {
@@ -282,24 +287,31 @@ export default function OnboardingPage() {
                           <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
                             Primary Industry
                           </label>
-                          <select
-                            value={formData.industry}
-                            onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                            className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background"
-                          >
-                            <option value="Fintech">Fintech & Payments</option>
-                            <option value="E-Commerce">E-Commerce & DTC</option>
-                            <option value="Retail">Retail</option>
-                            <option value="Insurance">Insurance</option>
-                            <option value="Manufacturing">Manufacturing</option>
-                            <option value="Healthcare">Healthcare</option>
-                            <option value="Hospitality">Hospitality</option>
-                            <option value="B2B SaaS">B2B SaaS & Enterprise</option>
-                            <option value="AI">Artificial Intelligence</option>
-                            <option value="Web3">Web3 & Digital Assets</option>
-                            <option value="HealthTech">HealthTech</option>
-                            <option value="Other">Other</option>
-                          </select>
+                          <div className="relative">
+                            <select
+                              value={formData.industry}
+                              onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                              className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background appearance-none pr-10"
+                            >
+                              <option value="">Select Primary Industry</option>
+                              <option value="Fintech & Payments">Fintech & Payments</option>
+                              <option value="E-Commerce, DTC & Retail">E-Commerce, DTC & Retail</option>
+                              <option value="SaaS & Software">SaaS & Software</option>
+                              <option value="Artificial Intelligence (AI)">Artificial Intelligence (AI)</option>
+                              <option value="Web3 & Digital Assets">Web3 & Digital Assets</option>
+                              <option value="Online Marketplaces">Online Marketplaces</option>
+                              <option value="IT Services & Tech Consulting">IT Services & Tech Consulting</option>
+                              <option value="HR & Talent Firms">HR & Talent Firms</option>
+                              <option value="EdTech & Online Education">EdTech & Online Education</option>
+                              <option value="Marketing & Creative Agencies">Marketing & Creative Agencies</option>
+                              <option value="Healthcare & HealthTech">Healthcare & HealthTech</option>
+                              <option value="Insurance">Insurance</option>
+                              <option value="Manufacturing">Manufacturing</option>
+                              <option value="Hospitality & Tourism">Hospitality & Tourism</option>
+                              <option value="Other">Other</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                          </div>
                         </div>
                       </div>
 
@@ -308,16 +320,20 @@ export default function OnboardingPage() {
                           <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
                             Company Size
                           </label>
-                          <select
-                            value={formData.company_size}
-                            onChange={(e) => setFormData({ ...formData, company_size: e.target.value })}
-                            className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background"
-                          >
-                            <option value="1-10 employees">1 - 10 employees (Pre-seed / Seed)</option>
-                            <option value="11-50 employees">11 - 50 employees (Series A)</option>
-                            <option value="51-200 employees">51 - 200 employees (Series B+)</option>
-                            <option value="200+ employees">200+ employees (Enterprise)</option>
-                          </select>
+                          <div className="relative">
+                            <select
+                              value={formData.company_size}
+                              onChange={(e) => setFormData({ ...formData, company_size: e.target.value })}
+                              className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background appearance-none pr-10"
+                            >
+                              <option value="">Select Company Size</option>
+                              <option value="1-10 employees">1 – 10 employees (Small / Pre-seed)</option>
+                              <option value="11-50 employees">11 – 50 employees (Growing)</option>
+                              <option value="51-200 employees">51 – 200 employees (Scaling)</option>
+                              <option value="200+ employees">200+ employees (Enterprise)</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                          </div>
                         </div>
 
                         <div className="space-y-1.5">
@@ -401,18 +417,23 @@ export default function OnboardingPage() {
                         <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
                           How did you hear about XC Global?
                         </label>
-                        <select
-                          value={formData.how_heard}
-                          onChange={(e) => setFormData({ ...formData, how_heard: e.target.value })}
-                          className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background"
-                        >
-                          <option value="">Select option (optional)</option>
-                          <option value="LinkedIn">LinkedIn</option>
-                          <option value="Founder Referral">Founder / Investor Referral</option>
-                          <option value="Search">Search / Web</option>
-                          <option value="Event">Event / Conference</option>
-                          <option value="Other">Other</option>
-                        </select>
+                        <div className="relative">
+                          <select
+                            value={formData.how_heard}
+                            onChange={(e) => setFormData({ ...formData, how_heard: e.target.value })}
+                            className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background appearance-none pr-10"
+                          >
+                            <option value="">Select How You Heard About Us</option>
+                            <option value="LinkedIn">LinkedIn</option>
+                            <option value="Founder Referral">Founder / Investor Referral</option>
+                            <option value="Search">Search / Web</option>
+                            <option value="Event">Event / Conference</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="Other">Other</option>
+                          </select>
+                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                        </div>
                       </div>
                     </div>
                   </div>

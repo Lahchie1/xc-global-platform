@@ -70,6 +70,10 @@ function renderBrandedTemplate(subject: string, bodyHtml: string) {
       blockquote { border-left: 4px solid #DB833A !important; background: #f8fafc !important; padding: 12px 16px !important; margin: 16px 0 !important; font-style: italic !important; }
       table { border-collapse: collapse !important; width: 100% !important; margin: 16px 0 !important; }
       th, td { border: 1px solid #e2e8f0 !important; padding: 8px 12px !important; }
+      h1 { font-size: 24px !important; font-weight: 700 !important; margin: 20px 0 10px 0 !important; color: #111827 !important; line-height: 1.3 !important; }
+      h2 { font-size: 20px !important; font-weight: 700 !important; margin: 18px 0 8px 0 !important; color: #111827 !important; line-height: 1.35 !important; }
+      h3 { font-size: 16px !important; font-weight: 600 !important; margin: 16px 0 6px 0 !important; color: #111827 !important; line-height: 1.4 !important; }
+      p { margin: 0 0 16px 0 !important; line-height: 1.75 !important; }
     </style>
   </head>
   <body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111827;">

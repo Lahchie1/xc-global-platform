@@ -161,6 +161,10 @@ function buildPreviewHtml(subject: string, body: string) {
       blockquote { border-left: 4px solid #DB833A !important; background: #f8fafc !important; padding: 12px 16px !important; margin: 16px 0 !important; font-style: italic !important; }
       table { border-collapse: collapse !important; width: 100% !important; margin: 16px 0 !important; }
       th, td { border: 1px solid #e2e8f0 !important; padding: 8px 12px !important; }
+      h1 { font-size: 24px !important; font-weight: 700 !important; margin: 20px 0 10px 0 !important; color: #111827 !important; line-height: 1.3 !important; }
+      h2 { font-size: 20px !important; font-weight: 700 !important; margin: 18px 0 8px 0 !important; color: #111827 !important; line-height: 1.35 !important; }
+      h3 { font-size: 16px !important; font-weight: 600 !important; margin: 16px 0 6px 0 !important; color: #111827 !important; line-height: 1.4 !important; }
+      p { margin: 0 0 16px 0 !important; line-height: 1.75 !important; }
     </style>
   </head>
   <body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111827;">
@@ -347,8 +351,46 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
   };
 
   const handleFormatBlock = (tag: "p" | "h1" | "h2" | "h3", label: "Paragraph" | "Header 1" | "Header 2" | "Header 3") => {
-    editorRef.current?.focus();
-    document.execCommand("formatBlock", false, tag);
+    const editor = editorRef.current;
+    if (!editor) return;
+    editor.focus();
+
+    // Ensure selection exists inside editor
+    let sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || !editor.contains(sel.anchorNode)) {
+      const range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+
+    // Try formatBlock with brackets (e.g. <h1>)
+    let applied = false;
+    try {
+      applied = document.execCommand("formatBlock", false, `<${tag}>`);
+    } catch {
+      applied = false;
+    }
+
+    // Fallback if browser expects tag without brackets (e.g. h1)
+    if (!applied) {
+      try {
+        applied = document.execCommand("formatBlock", false, tag);
+      } catch {
+        applied = false;
+      }
+    }
+
+    // Fallback if formatBlock failed completely (e.g. cursor at empty line or unformatted node)
+    if (!applied) {
+      sel = window.getSelection();
+      const selectedText = sel?.toString() || "";
+      const textToUse = selectedText || (tag === "p" ? "<br/>" : "Heading");
+      const html = `<${tag}>${textToUse}</${tag}>`;
+      document.execCommand("insertHTML", false, html);
+    }
+
     setFormatBlockValue(label);
     setFormatDropdownOpen(false);
     handleEditorInput();
@@ -877,17 +919,21 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
             {/* Template selector */}
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-semibold text-text-muted">Template:</span>
-              <select
-                value={templateId}
-                onChange={(e) => applyTemplate(e.target.value)}
-                className="px-2.5 py-1.5 rounded-lg border border-border text-xs bg-surface-container-low text-text-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              >
-                {TEMPLATES.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  value={templateId}
+                  onChange={(e) => applyTemplate(e.target.value)}
+                  className="px-2.5 py-1.5 rounded-lg border border-border text-xs bg-surface-container-low text-text-primary focus:outline-none focus:ring-1 focus:ring-primary appearance-none pr-7"
+                >
+                  <option value="">Select Template</option>
+                  {TEMPLATES.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" />
+              </div>
             </div>
           </div>
 
@@ -901,18 +947,22 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
               <label className="text-xs font-bold uppercase tracking-wider text-text-muted">
                 From
               </label>
-              <select
-                name="senderAddress"
-                value={senderAddress}
-                onChange={(e) => setSenderAddress(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg border border-border text-sm bg-surface-white focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                {SENDER_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <select
+                  name="senderAddress"
+                  value={senderAddress}
+                  onChange={(e) => setSenderAddress(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-lg border border-border text-sm bg-surface-white focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none pr-10"
+                >
+                  <option value="">Select Sender Address</option>
+                  {SENDER_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+              </div>
               {fieldErrors.senderAddress && (
                 <p className="text-[11px] text-status-error">{fieldErrors.senderAddress}</p>
               )}
@@ -1508,7 +1558,7 @@ export function AdminEmailsClient({ initialEmails, loadError }: Props) {
                     onDrop={handleDrop}
                     onDragEnd={handleDragEnd}
                     onScroll={handleEditorScroll}
-                    className="p-5 min-h-[260px] max-h-[480px] overflow-y-auto rounded-b-xl text-sm text-text-primary focus:outline-none leading-relaxed space-y-3 empty:before:content-['Type_your_message_here...'] empty:before:text-text-muted select-text [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_ol]:space-y-1 [&_li]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-[#DB833A] [&_blockquote]:bg-surface-container-low [&_blockquote]:px-4 [&_blockquote]:py-3 [&_blockquote]:my-3 [&_blockquote]:rounded-r-lg [&_blockquote]:italic [&_table]:w-full [&_table]:border-collapse [&_table]:my-3 [&_th]:border [&_th]:border-border [&_th]:p-2 [&_th]:bg-surface-container-low [&_td]:border [&_td]:border-border [&_td]:p-2 [&_img]:cursor-grab [&_img]:active:cursor-grabbing hover:[&_img]:ring-2 hover:[&_img]:ring-primary/40 [&_img]:transition-all"
+                    className="p-5 min-h-[260px] max-h-[480px] overflow-y-auto rounded-b-xl text-sm text-text-primary focus:outline-none leading-relaxed space-y-3 empty:before:content-['Type_your_message_here...'] empty:before:text-text-muted select-text [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-3 [&_ul]:space-y-1 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-3 [&_ol]:space-y-1 [&_li]:leading-relaxed [&_blockquote]:border-l-4 [&_blockquote]:border-[#DB833A] [&_blockquote]:bg-surface-container-low [&_blockquote]:px-4 [&_blockquote]:py-3 [&_blockquote]:my-3 [&_blockquote]:rounded-r-lg [&_blockquote]:italic [&_table]:w-full [&_table]:border-collapse [&_table]:my-3 [&_th]:border [&_th]:border-border [&_th]:p-2 [&_th]:bg-surface-container-low [&_td]:border [&_td]:border-border [&_td]:p-2 [&_img]:cursor-grab [&_img]:active:cursor-grabbing hover:[&_img]:ring-2 hover:[&_img]:ring-primary/40 [&_img]:transition-all [&_h1]:text-2xl [&_h1]:font-extrabold [&_h1]:text-text-primary [&_h1]:my-4 [&_h1]:leading-tight [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-text-primary [&_h2]:my-3 [&_h2]:leading-tight [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-text-primary [&_h3]:my-2 [&_h3]:leading-snug [&_p]:my-2.5"
                     style={{
                       lineHeight: "1.75",
                     }}

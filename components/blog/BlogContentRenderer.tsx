@@ -174,7 +174,14 @@ export function BlogContentRenderer({ content }: BlogContentRendererProps) {
             );
 
           case "h":
-            if (block.level === 1 || block.level === 2) {
+            if (block.level === 1) {
+              return (
+                <h1 key={index} className="text-3xl sm:text-4xl font-extrabold text-text-primary pt-8 pb-2 tracking-tight">
+                  {renderInlineMarkdown(block.text)}
+                </h1>
+              );
+            }
+            if (block.level === 2) {
               return (
                 <h2 key={index} className="text-2xl sm:text-3xl font-bold text-text-primary pt-6 pb-1 tracking-tight">
                   {renderInlineMarkdown(block.text)}

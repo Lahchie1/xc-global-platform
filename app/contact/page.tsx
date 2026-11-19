@@ -11,6 +11,7 @@ import {
   Send,
   Loader2,
   Clock,
+  ChevronDown,
 } from "lucide-react";
 
 export default function ContactPage() {
@@ -18,7 +19,7 @@ export default function ContactPage() {
     name: "",
     email: "",
     company: "",
-    subject: "general",
+    subject: "",
     message: "",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -141,17 +142,21 @@ export default function ContactPage() {
                       <label className="text-xs font-bold uppercase tracking-wider text-text-primary">
                         Topic of Inquiry
                       </label>
-                      <select
-                        value={formData.subject}
-                        onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background"
-                      >
-                        <option value="general">General Partnership</option>
-                        <option value="business-onboarding">Engage Marketing Talent</option>
-                        <option value="talent-network">Join Talent Network</option>
-                        <option value="advisory">Executive Growth Advisory</option>
-                        <option value="press">Media & Press</option>
-                      </select>
+                      <div className="relative">
+                        <select
+                          value={formData.subject}
+                          onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                          className="w-full px-4 py-3 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 bg-background appearance-none pr-10"
+                        >
+                          <option value="">Select Topic of Inquiry</option>
+                          <option value="general">General Partnership</option>
+                          <option value="business-onboarding">Engage Marketing Talent</option>
+                          <option value="talent-network">Join Talent Network</option>
+                          <option value="advisory">Executive Growth Advisory</option>
+                          <option value="press">Media & Press</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                      </div>
                     </div>
                   </div>
 

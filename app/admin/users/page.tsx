@@ -333,29 +333,37 @@ export default function AdminUsersPage() {
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <label className="text-xs font-bold uppercase text-text-muted">Role</label>
-                    <select
-                      value={grantRole}
-                      onChange={(e) => setGrantRole(e.target.value as UserRole)}
-                      className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background"
-                    >
-                      <option value="business">Business</option>
-                      <option value="talent">Talent</option>
-                      <option value="admin">Admin</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={grantRole}
+                        onChange={(e) => setGrantRole(e.target.value as UserRole)}
+                        className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background appearance-none pr-10"
+                      >
+                        <option value="">Select Role</option>
+                        <option value="business">Business</option>
+                        <option value="talent">Talent</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                    </div>
                   </div>
 
                   {grantRole === "admin" && (
                     <div className="space-y-1">
                       <label className="text-xs font-bold uppercase text-text-muted">Admin Level</label>
-                      <select
-                        value={grantAdminLevel}
-                        onChange={(e) => setGrantAdminLevel(e.target.value as AdminLevel)}
-                        className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background"
-                      >
-                        <option value="super_admin">Super Admin — Full access, can grant/revoke admin access</option>
-                        <option value="service_admin">Service Admin — Can manage users & submissions</option>
-                        <option value="reader_admin">Reader Admin — Read-only access</option>
-                      </select>
+                      <div className="relative">
+                        <select
+                          value={grantAdminLevel}
+                          onChange={(e) => setGrantAdminLevel(e.target.value as AdminLevel)}
+                          className="w-full px-3 py-2 rounded-lg border border-border text-xs focus:outline-none focus:ring-1 focus:ring-primary bg-background appearance-none pr-10"
+                        >
+                          <option value="">Select Admin Level</option>
+                          <option value="super_admin">Super Admin — Full access, can grant/revoke admin access</option>
+                          <option value="service_admin">Service Admin — Can manage users &amp; submissions</option>
+                          <option value="reader_admin">Reader Admin — Read-only access</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
+                      </div>
                       <div className="mt-2 p-3 rounded-lg bg-surface-container-low text-[11px] text-text-muted space-y-1">
                         {grantAdminLevel === "super_admin" && <p>🔑 Full platform access. Can grant or revoke admin permissions for any user.</p>}
                         {grantAdminLevel === "service_admin" && <p>🔧 Can review submissions, manage users and content. Cannot grant admin access.</p>}
