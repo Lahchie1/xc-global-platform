@@ -55,7 +55,7 @@ export default function HomePage() {
                 </span>
                 <span className="text-white/40 text-xs">|</span>
                 <span className="text-xs text-secondary font-semibold">
-                  Trusted by 8+ Brands
+                  Trusted by 10+ Brands
                 </span>
               </div>
 
@@ -264,17 +264,20 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-2.5 items-center justify-center">
               {[
-                "Fintech",
-                "E-commerce",
-                "SaaS",
-                "AI",
-                "Web3",
+                "Fintech & Payments",
+                "E-Commerce, DTC & Retail",
+                "SaaS & Software",
+                "Artificial Intelligence (AI)",
+                "Web3 & Digital Assets",
                 "Online Marketplaces",
-                "IT Services",
-                "HR Firms",
-                "EdTech",
-                "Marketing Agencies",
-                "Digital Asset Companies",
+                "IT Services & Tech Consulting",
+                "HR & Talent Firms",
+                "EdTech & Online Education",
+                "Marketing & Creative Agencies",
+                "Healthcare & HealthTech",
+                "Insurance",
+                "Manufacturing",
+                "Hospitality & Tourism",
               ].map((sector) => (
                 <span
                   key={sector}
