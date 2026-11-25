@@ -98,7 +98,7 @@ export default async function BlogPage() {
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div className="lg:col-span-8 space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs text-text-muted">
+                  <div className="flex flex-col gap-1.5 text-xs text-text-muted">
                     <div>
                       <span className="inline-block px-2.5 py-0.5 rounded-full bg-badge-gold-bg text-badge-gold-text font-bold text-xs">
                         Featured Analysis

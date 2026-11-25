@@ -96,7 +96,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {/* Article Header */}
           <header className="space-y-6 pb-8 border-b border-border">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs text-text-muted">
+            <div className="flex flex-col gap-1.5 text-xs text-text-muted">
               <div>
                 <span className="inline-block px-2.5 py-0.5 rounded-full bg-badge-gold-bg text-badge-gold-text font-bold text-xs">
                   Growth Engineering

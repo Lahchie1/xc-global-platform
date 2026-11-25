@@ -625,15 +625,20 @@ export default function HomePage() {
 
         {/* Final Conversion Call to Action */}
         <ScrollReveal className="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-24 w-full" delay={60}>
-          <div className="bg-primary text-white rounded-2xl p-8 sm:p-16 text-center space-y-8 relative overflow-hidden">
+          <div className="bg-white border-2 border-primary rounded-2xl p-8 sm:p-16 text-center space-y-8 relative overflow-hidden">
+            {/* Subtle ambient blobs */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-primary/5 blur-3xl" />
+              <div className="absolute -bottom-16 -left-16 w-64 h-64 rounded-full bg-secondary/5 blur-3xl" />
+            </div>
             <div className="max-w-2xl mx-auto space-y-4 relative z-10">
               <span className="text-xs font-bold uppercase tracking-widest text-secondary">
                 GET STARTED TODAY
               </span>
-              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white">
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-text-primary">
                 Ready to institutionalize your growth engine?
               </h2>
-              <p className="text-base text-gray-300 leading-relaxed">
+              <p className="text-base text-text-secondary leading-relaxed">
                 Connect with our partnership directors to deploy dedicated marketing leaders or apply to join our talent bench.
               </p>
             </div>
@@ -641,13 +646,13 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
               <Link
                 href="/onboarding"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-secondary text-primary font-bold text-sm hover:bg-secondary-hover transition-colors shadow-lg"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors shadow-lg"
               >
                 Start Business Onboarding
               </Link>
               <Link
                 href="/register?role=talent"
-                className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-surface-white/10 text-white border border-white/20 font-semibold text-sm hover:bg-surface-white/20 transition-colors"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-transparent text-text-primary border border-primary font-semibold text-sm hover:bg-primary/5 transition-colors"
               >
                 Join as Talent
               </Link>
