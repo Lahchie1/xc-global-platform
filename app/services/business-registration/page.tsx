@@ -289,31 +289,31 @@ export default function BusinessRegistrationPage() {
 
         {/* Bottom CTA Banner */}
         <section className="max-w-7xl mx-auto px-6 lg:px-12 pt-6">
-          <div className="bg-primary text-white rounded-3xl p-8 sm:p-14 text-center relative overflow-hidden shadow-xl">
+          <div className="bg-white border-2 border-primary rounded-3xl p-8 sm:p-14 text-center relative overflow-hidden shadow-sm">
             <div className="max-w-2xl mx-auto space-y-6 relative z-10">
               <span className="text-xs font-bold uppercase tracking-widest text-secondary">
                 Ready to Make Your Business Official?
               </span>
 
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-text-primary">
                 Let&apos;s help you take the first step.
               </h2>
 
-              <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-text-secondary leading-relaxed">
                 Whether you&apos;re launching a new venture or formalising an existing business, we&apos;re ready to support your registration journey.
               </p>
 
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link
                   href="/onboarding"
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-secondary text-primary font-bold text-sm hover:bg-secondary-hover transition-colors shadow-lg"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors shadow-lg"
                 >
                   Start Your Registration
                 </Link>
 
                 <Link
                   href="/contact"
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-white/10 text-white border border-white/20 font-semibold text-sm hover:bg-white/20 transition-colors"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-transparent text-text-primary border border-primary font-semibold text-sm hover:bg-primary/5 transition-colors"
                 >
                   Book a Consultation
                 </Link>

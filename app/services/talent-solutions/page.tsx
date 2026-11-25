@@ -268,16 +268,16 @@ export default function TalentSolutionsPage() {
 
         {/* Dual CTA */}
         <section className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="bg-primary text-white rounded-3xl p-8 sm:p-14 border border-secondary/30 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-8">
+          <div className="bg-white border-2 border-primary rounded-3xl p-8 sm:p-14 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="space-y-3 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/20 text-secondary text-xs font-semibold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-semibold uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Ready to Hire or Join?</span>
               </div>
-              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">
+              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-text-primary">
                 Hire world-class marketers or advance your career with XC Global.
               </h2>
-              <p className="text-sm text-white/80 leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 Connect with our talent directors to discuss hiring needs or submit your portfolio for accreditation.
               </p>
             </div>
@@ -285,13 +285,13 @@ export default function TalentSolutionsPage() {
             <div className="flex flex-col sm:flex-row gap-3 shrink-0">
               <Link
                 href="/onboarding"
-                className="px-8 py-3.5 rounded-lg bg-secondary text-primary font-bold text-sm hover:bg-secondary-hover transition-all text-center shadow-lg"
+                className="px-8 py-3.5 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-all text-center shadow-lg"
               >
                 Hire Marketers
               </Link>
               <Link
                 href="/register?role=talent"
-                className="px-6 py-3.5 rounded-lg bg-white/10 text-white font-semibold text-sm hover:bg-white/20 transition-all text-center ring-1 ring-white/20"
+                className="px-6 py-3.5 rounded-lg bg-transparent text-text-primary border border-primary font-semibold text-sm hover:bg-primary/5 transition-all text-center"
               >
                 Apply as Talent
               </Link>

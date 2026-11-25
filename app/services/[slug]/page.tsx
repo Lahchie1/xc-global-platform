@@ -293,17 +293,17 @@ export default async function ServiceDetailPage({
 
         {/* Bottom CTA Banner */}
         <section className="max-w-7xl mx-auto px-6 lg:px-12 pt-10">
-          <div className="bg-primary text-white rounded-3xl p-8 sm:p-14 text-center space-y-6">
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight">
+          <div className="bg-white border-2 border-primary rounded-3xl p-8 sm:p-14 text-center space-y-6">
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-text-primary">
               Ready to Accelerate Your {service.title}?
             </h2>
-            <p className="text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm text-text-secondary max-w-2xl mx-auto leading-relaxed">
               We help you identify what your business needs, bring the right capabilities together, and turn marketing efforts into measurable progress.
             </p>
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-secondary text-primary font-bold text-sm hover:bg-secondary-hover transition-colors shadow-lg"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-primary text-white font-bold text-sm hover:bg-primary/90 transition-colors shadow-lg"
               >
                 <span>Let&apos;s Talk About Your Growth Goals</span>
                 <ArrowRight className="w-4 h-4" />

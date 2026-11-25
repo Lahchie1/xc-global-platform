@@ -232,19 +232,19 @@ export default function IndustriesPage() {
 
         {/* CTA */}
         <section className="max-w-7xl mx-auto px-6 lg:px-12 pt-20 text-center">
-          <div className="bg-primary rounded-2xl p-10 border border-border space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/20 text-secondary text-xs font-semibold uppercase tracking-wider">
+          <div className="bg-white border-2 border-primary rounded-2xl p-10 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-xs font-semibold uppercase tracking-wider">
               Work With Us
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white">
+            <h2 className="text-2xl sm:text-3xl font-bold text-text-primary">
               Working in a sector we haven&apos;t listed?
             </h2>
-            <p className="text-sm text-gray-300 max-w-xl mx-auto">
+            <p className="text-sm text-text-secondary max-w-xl mx-auto">
               If your business is technology-focused and needs marketing, growth, or talent support — we would like to hear from you.
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-secondary text-primary text-xs font-bold hover:bg-secondary/90 transition-colors shadow-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-colors shadow-sm"
             >
               <span>Get in Touch</span>
               <ArrowRight className="w-4 h-4" />

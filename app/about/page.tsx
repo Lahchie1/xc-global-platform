@@ -205,42 +205,42 @@ export default function AboutPage() {
 
         {/* Global Footprint */}
         <section className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
-          <div className="bg-primary text-white rounded-2xl p-8 sm:p-14">
+          <div className="bg-white border-2 border-primary rounded-2xl p-8 sm:p-14">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-secondary">
                   <Globe2 className="w-4 h-4" />
                   Global Operating Footprint
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
                   Pan-African Roots, Global Horizon
                 </h2>
-                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
+                <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
                   Headquartered in Lagos with operational presence and remote talent supporting brands to reach new markets and scale sustainably.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center sm:text-left">
-                <div className="bg-surface-white/10 p-5 rounded-xl border border-white/10">
+                <div className="bg-surface-container-low p-5 rounded-xl border border-border">
                   <h4 className="font-bold text-secondary text-sm">Lagos Hub</h4>
-                  <p className="text-xs text-gray-300 mt-1">Lagos, Nigeria</p>
-                  <p className="text-[11px] text-gray-400 mt-0.5">Commercial & Talent Operations</p>
+                  <p className="text-xs text-text-primary mt-1">Lagos, Nigeria</p>
+                  <p className="text-[11px] text-text-muted mt-0.5">Commercial & Talent Operations</p>
                 </div>
-                <div className="bg-surface-white/10 p-5 rounded-xl border border-white/10">
+                <div className="bg-surface-container-low p-5 rounded-xl border border-border">
                   <h4 className="font-bold text-secondary text-sm">Global Reach</h4>
-                  <p className="text-xs text-gray-300 mt-1">Africa, North America, Europe</p>
-                  <p className="text-[11px] text-gray-400 mt-0.5">Cross-Border Market Strategy</p>
+                  <p className="text-xs text-text-primary mt-1">Africa, North America, Europe</p>
+                  <p className="text-[11px] text-text-muted mt-0.5">Cross-Border Market Strategy</p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <span className="text-xs text-gray-300">
+            <div className="mt-10 pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+              <span className="text-xs text-text-secondary">
                 Want to partner with us or explore an engagement?
               </span>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-secondary text-primary font-bold text-xs hover:bg-secondary-hover transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary text-white font-bold text-xs hover:bg-primary/90 transition-colors"
               >
                 <span>Get in Touch</span>
                 <ArrowRight className="w-4 h-4" />
