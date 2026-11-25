@@ -267,3 +267,40 @@ export async function getSentEmails() {
 
   return data || [];
 }
+
+export async function getReceivedEmails() {
+  await requireRole(["admin"]);
+
+  const adminClient = createAdminClient();
+  const { data, error } = await adminClient
+    .from("received_emails")
+    .select("*")
+    .order("received_at", { ascending: false })
+    .limit(200);
+
+  if (error) {
+    console.warn("getReceivedEmails note:", error.message);
+    return [];
+  }
+
+  return data || [];
+}
+
+export async function markReceivedEmailAsRead(id: string) {
+  await requireRole(["admin"]);
+
+  const adminClient = createAdminClient();
+  const { error } = await adminClient
+    .from("received_emails")
+    .update({ is_read: true })
+    .eq("id", id);
+
+  if (error) {
+    console.warn("markReceivedEmailAsRead error:", error.message);
+    return { ok: false, error: error.message };
+  }
+
+  revalidatePath("/admin/emails");
+  return { ok: true };
+}
+

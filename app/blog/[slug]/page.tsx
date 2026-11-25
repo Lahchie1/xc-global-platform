@@ -96,18 +96,22 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {/* Article Header */}
           <header className="space-y-6 pb-8 border-b border-border">
-            <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
-              <span className="px-2.5 py-0.5 rounded-full bg-badge-gold-bg text-badge-gold-text font-bold">
-                Growth Engineering
-              </span>
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" />
-                {formatDate(post.published_at)}
-              </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> 6 min read
-              </span>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs text-text-muted">
+              <div>
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-badge-gold-bg text-badge-gold-text font-bold text-xs">
+                  Growth Engineering
+                </span>
+              </div>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" />
+                  {formatDate(post.published_at)}
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <Clock className="w-3.5 h-3.5" /> 6 min read
+                </span>
+              </div>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-text-primary leading-tight">

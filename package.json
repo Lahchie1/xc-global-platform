@@ -40,6 +40,7 @@
     "react-dom": "^19.0.0",
     "resend": "^4.1.2",
     "scheduler": "^0.28.0",
+    "svix": "^2.11.1",
     "tailwind-merge": "^3.0.1",
     "to-regex-range": "^5.0.1",
     "ts-interface-checker": "^1.0.2"

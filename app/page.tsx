@@ -603,26 +603,20 @@ export default function HomePage() {
               </div>
 
               <blockquote className="text-2xl sm:text-3xl font-medium tracking-tight text-text-primary leading-snug">
-                “XC Global deployed a growth lead and scaled our customer acquisition by{" "}
+                “XC Global deployed a Growth Lead who scaled our customer acquisition by{" "}
                 <span className="underline decoration-secondary decoration-4 underline-offset-4 font-bold">
-                  3.4x in 90 days
+                  3.4x in just 90 days
                 </span>
-                . Their managed model is completely unmatched compared to traditional digital agencies.”
+                . Their deep industry knowledge and technical expertise across Fintech, Web3 and E-commerce set them apart from traditional digital marketing agencies.”
               </blockquote>
 
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
                 <div className="w-14 h-14 rounded-full bg-surface-white border border-border flex items-center justify-center text-text-primary font-bold text-lg shadow-sm">
-                  TB
+                  NE
                 </div>
                 <div className="text-center sm:text-left">
-                  <h4 className="font-bold text-text-primary text-base">Tunde Balogun</h4>
-                  <p className="text-xs text-text-secondary">Founder & CEO at KudaScale (Fintech)</p>
-                </div>
-                <div className="sm:ml-4 sm:pl-4 sm:border-l border-border flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-badge-gold-bg text-badge-gold-text text-xs font-semibold flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Series A Verified Partner
-                  </span>
+                  <h4 className="font-bold text-text-primary text-base">Nonso E.</h4>
+                  <p className="text-xs text-text-secondary">Founder & MD at Wiremoney (Fintech)</p>
                 </div>
               </div>
             </div>

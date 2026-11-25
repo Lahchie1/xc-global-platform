@@ -88,3 +88,29 @@ export interface Opportunity {
   created_at: string;
 }
 
+export interface ReceivedEmail {
+  id: string;
+  resend_email_id: string;
+  from_email: string;
+  from_name?: string | null;
+  to_email: string;
+  subject: string;
+  body_text?: string | null;
+  body_html?: string | null;
+  is_read: boolean;
+  received_at: string;
+}
+
+export interface SentEmail {
+  id: string;
+  sender_address: string;
+  recipient_email: string;
+  cc_emails: string[] | null;
+  subject: string;
+  body_html: string;
+  resend_message_id: string | null;
+  status: string | null;
+  sent_by: string | null;
+  created_at: string;
+}
+

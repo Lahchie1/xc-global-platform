@@ -98,17 +98,22 @@ export default async function BlogPage() {
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 <div className="lg:col-span-8 space-y-4">
-                  <div className="flex items-center gap-3 text-xs text-text-muted">
-                    <span className="px-2.5 py-0.5 rounded-full bg-badge-gold-bg text-badge-gold-text font-bold">
-                      Featured Analysis
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {formatDate(featured.published_at || featured.created_at)}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" /> 6 min read
-                    </span>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs text-text-muted">
+                    <div>
+                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-badge-gold-bg text-badge-gold-text font-bold text-xs">
+                        Featured Analysis
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {formatDate(featured.published_at || featured.created_at)}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" /> 6 min read
+                      </span>
+                    </div>
                   </div>
 
                   <h2 className="text-2xl sm:text-3xl font-bold text-text-primary group-hover:text-accent-gold transition-colors">

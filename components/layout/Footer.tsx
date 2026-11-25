@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { NewsletterSection } from "./NewsletterSection";
 
 // Social Media SVGs
 function LinkedInIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -65,6 +66,9 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-surface-white">
+      {/* Email Signup Section before main footer */}
+      <NewsletterSection />
+
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
           {/* Brand Col */}
