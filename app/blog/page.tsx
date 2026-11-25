@@ -15,7 +15,7 @@ export const metadata = {
 const defaultPosts: BlogPost[] = [
   {
     id: "post-1",
-    title: "The Death of Blended CAC: Why Precision Growth Engineering Wins",
+    title: "The Death of Blended CAC: Why Precision XC Global Blog Wins",
     slug: "the-death-of-blended-cac",
     excerpt:
       "In the post-ZIRP reality, relying on blended customer acquisition cost obscures broken unit economics. Discover how precision acquisition and algorithmic attribution protect venture capital.",

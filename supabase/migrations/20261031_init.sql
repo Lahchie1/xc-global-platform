@@ -272,7 +272,7 @@ create policy "Talents and Admins can read resumes"
 insert into public.blog_posts (title, slug, excerpt, content, published, published_at)
 values
 (
-  'The Death of Blended CAC: Why Precision Growth Engineering Wins',
+  'The Death of Blended CAC: Why Precision XC Global Blog Wins',
   'the-death-of-blended-cac',
   'In the era of privacy changes and high interest rates, relying on blended customer acquisition costs hides unsustainable unit economics.',
   '## The Post-ZIRP Growth Reality

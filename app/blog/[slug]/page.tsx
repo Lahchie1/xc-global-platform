@@ -12,7 +12,7 @@ interface PageProps {
 }
 
 const fallbackArticle = {
-  title: "The Death of Blended CAC: Why Precision Growth Engineering Wins",
+  title: "The Death of Blended CAC: Why Precision XC Global Blog Wins",
   slug: "the-death-of-blended-cac",
   published_at: "2026-10-24T12:00:00Z",
   author: "XC Global Growth Architecture Pod",
@@ -99,7 +99,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             <div className="flex flex-col gap-1.5 text-xs text-text-muted">
               <div>
                 <span className="inline-block px-2.5 py-0.5 rounded-full bg-badge-gold-bg text-badge-gold-text font-bold text-xs">
-                  Growth Engineering
+                  XC Global Blog
                 </span>
               </div>
               <div className="flex items-center gap-2 sm:gap-3">
@@ -128,7 +128,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                     XC Global Editorial Team
                   </h4>
                   <p className="text-[11px] text-text-muted">
-                    Reviewed by Senior Growth Partners
+                    Reviewed by Onuwabhagbe Omodiagbe
                   </p>
                 </div>
               </div>
