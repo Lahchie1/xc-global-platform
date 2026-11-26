@@ -328,7 +328,7 @@ export function AdminEmailsClient({ initialEmails, initialReceivedEmails = [], l
     setReceivedEmails(initialReceivedEmails);
   }, [initialReceivedEmails]);
 
-  // Auto-refresh inbound emails via uncached API polling (every 5s) + Supabase Realtime
+  // Auto-refresh inbound emails via uncached API polling (every 30s) + Supabase Realtime
   useEffect(() => {
     let active = true;
 
@@ -349,9 +349,8 @@ export function AdminEmailsClient({ initialEmails, initialReceivedEmails = [], l
       }
     };
 
-    // Fetch immediately on mount and then every 5 seconds while tab is visible
-    void refreshInbox();
-    const intervalId = setInterval(refreshInbox, 5000);
+    // Poll every 30 seconds while tab is visible (SSR already loads fresh initial data)
+    const intervalId = setInterval(refreshInbox, 30000);
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         void refreshInbox();
