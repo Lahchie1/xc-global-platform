@@ -11,6 +11,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectParam = searchParams?.get("redirect");
+  const reasonParam = searchParams?.get("reason");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -48,6 +49,12 @@ function LoginForm() {
         throw new Error(signInError.message);
       }
 
+      try {
+        localStorage.setItem("xc_portal_last_activity", String(Date.now()));
+      } catch {
+        // ignore storage errors
+      }
+
       if (redirectParam) {
         router.push(redirectParam);
         return;
@@ -80,6 +87,12 @@ function LoginForm() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
         <div className="bg-surface-white py-8 px-6 sm:px-10 rounded-2xl border border-border shadow-card space-y-6">
+          {reasonParam === "session_expired" && !error && (
+            <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium">
+              Your session expired due to inactivity. Please sign in again to continue.
+            </div>
+          )}
+
           {error && (
             <div className="p-3.5 rounded-lg bg-status-error/10 border border-status-error/20 text-status-error text-xs font-medium">
               {error}

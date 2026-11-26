@@ -41,7 +41,11 @@ interface PortalShellProps {
   activeClass?: string;
   /** Extra node rendered below nav links (e.g. a badge card) */
   footerExtra?: React.ReactNode;
+  /** Inactivity timeout in minutes before automatic sign-out (defaults to 120) */
+  inactivityTimeoutMinutes?: number;
 }
+
+const LAST_ACTIVITY_KEY = "xc_portal_last_activity";
 
 export function PortalShell({
   children,
@@ -52,6 +56,7 @@ export function PortalShell({
   sidebarBg = "bg-surface-white border-r border-border",
   activeClass = "bg-primary text-white",
   footerExtra,
+  inactivityTimeoutMinutes = 120,
 }: PortalShellProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -62,7 +67,114 @@ export function PortalShell({
     setMobileOpen(false);
   }, [pathname]);
 
+  // Enforce inactivity session timeout across tabs and browser restarts
+  useEffect(() => {
+    if (!inactivityTimeoutMinutes || inactivityTimeoutMinutes <= 0) return;
+
+    const timeoutMs = inactivityTimeoutMinutes * 60 * 1000;
+    let isSigningOut = false;
+
+    const expireSession = async () => {
+      if (isSigningOut) return;
+      isSigningOut = true;
+      try {
+        localStorage.removeItem(LAST_ACTIVITY_KEY);
+      } catch {
+        // ignore storage errors
+      }
+      try {
+        const supabase = createClient();
+        await supabase.auth.signOut();
+      } catch {
+        // continue to login redirect
+      }
+      router.replace("/login?reason=session_expired");
+    };
+
+    const getLastActivity = (): number | null => {
+      try {
+        const raw = localStorage.getItem(LAST_ACTIVITY_KEY);
+        if (!raw) return null;
+        const parsed = Number(raw);
+        return Number.isFinite(parsed) ? parsed : null;
+      } catch {
+        return null;
+      }
+    };
+
+    const recordActivity = () => {
+      try {
+        localStorage.setItem(LAST_ACTIVITY_KEY, String(Date.now()));
+      } catch {
+        // ignore storage errors
+      }
+    };
+
+    // Check immediately on mount in case browser/tab was reopened after timeout
+    const initialLast = getLastActivity();
+    if (initialLast !== null && Date.now() - initialLast >= timeoutMs) {
+      void expireSession();
+      return;
+    }
+    recordActivity();
+
+    let lastRecorded = Date.now();
+    const handleUserActivity = () => {
+      if (isSigningOut) return;
+      const now = Date.now();
+      // Throttle localStorage writes to once every 10s
+      if (now - lastRecorded >= 10000) {
+        lastRecorded = now;
+        recordActivity();
+      }
+    };
+
+    const checkTimeout = () => {
+      const last = getLastActivity();
+      if (last !== null && Date.now() - last >= timeoutMs) {
+        void expireSession();
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        checkTimeout();
+      }
+    };
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === LAST_ACTIVITY_KEY && e.newValue === null && !isSigningOut) {
+        router.replace("/login?reason=session_expired");
+      }
+    };
+
+    const events: Array<keyof WindowEventMap> = [
+      "mousedown",
+      "keydown",
+      "scroll",
+      "touchstart",
+      "mousemove",
+    ];
+    events.forEach((evt) => window.addEventListener(evt, handleUserActivity, { passive: true }));
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("storage", handleStorageChange);
+
+    const intervalId = setInterval(checkTimeout, 15000);
+
+    return () => {
+      events.forEach((evt) => window.removeEventListener(evt, handleUserActivity));
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(intervalId);
+    };
+  }, [inactivityTimeoutMinutes, router]);
+
   const handleSignOut = async () => {
+    try {
+      localStorage.removeItem(LAST_ACTIVITY_KEY);
+    } catch {
+      // ignore storage errors
+    }
     try {
       const supabase = createClient();
       await supabase.auth.signOut();

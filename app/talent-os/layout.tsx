@@ -59,6 +59,7 @@ export default function TalentOSLayout({ children }: { children: React.ReactNode
       portalName="TalentOS"
       portalSubtitle="Talent Console"
       userBadge={badge}
+      inactivityTimeoutMinutes={120}
       footerExtra={
         <div className="flex items-center gap-1.5 px-1 py-1">
           <ShieldCheck className="w-3.5 h-3.5 text-accent-gold" />

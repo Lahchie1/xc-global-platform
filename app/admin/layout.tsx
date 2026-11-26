@@ -27,6 +27,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       userBadge={{ initials: "AD", name: "Managing Director", subtitle: "Super Admin" }}
       sidebarBg="bg-primary border-r border-white/10"
       activeClass="bg-secondary text-primary font-bold"
+      inactivityTimeoutMinutes={30}
       footerExtra={
         <div className="flex items-center gap-1.5 px-1 py-1">
           <Shield className="w-3.5 h-3.5 text-secondary" />
