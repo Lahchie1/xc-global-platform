@@ -52,9 +52,11 @@ import {
 } from "lucide-react";
 import {
   sendAdminEmail,
+  getReceivedEmails,
   markReceivedEmailAsRead,
   type SendAdminEmailState,
 } from "@/app/actions/admin-email";
+import { createClient } from "@/lib/supabase/client";
 import type { ReceivedEmail } from "@/types/database";
 
 export interface SentEmail {
@@ -322,6 +324,82 @@ export function AdminEmailsClient({ initialEmails, initialReceivedEmails = [], l
   useEffect(() => {
     setEmails(initialEmails);
   }, [initialEmails]);
+
+  useEffect(() => {
+    setReceivedEmails(initialReceivedEmails);
+  }, [initialReceivedEmails]);
+
+  // Auto-refresh inbound emails via Supabase Realtime + 15s visibility-aware polling
+  useEffect(() => {
+    let active = true;
+
+    const refreshInbox = async () => {
+      if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
+      try {
+        const latest = (await getReceivedEmails()) as ReceivedEmail[];
+        if (active && Array.isArray(latest)) {
+          setReceivedEmails(latest);
+        }
+      } catch {
+        // Ignore transient polling errors
+      }
+    };
+
+    const intervalId = setInterval(refreshInbox, 15000);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        refreshInbox();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    let channel: ReturnType<ReturnType<typeof createClient>["channel"]> | null = null;
+    try {
+      const supabase = createClient();
+      channel = supabase
+        .channel("admin-received-emails")
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "received_emails" },
+          (payload) => {
+            const incoming = payload.new as ReceivedEmail;
+            if (!incoming?.id) return;
+            setReceivedEmails((prev) => {
+              if (prev.some((item) => item.id === incoming.id)) return prev;
+              return [incoming, ...prev];
+            });
+          }
+        )
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "received_emails" },
+          (payload) => {
+            const updated = payload.new as ReceivedEmail;
+            if (!updated?.id) return;
+            setReceivedEmails((prev) =>
+              prev.map((item) => (item.id === updated.id ? updated : item))
+            );
+          }
+        )
+        .subscribe();
+    } catch {
+      // Realtime optional; polling handles updates
+    }
+
+    return () => {
+      active = false;
+      clearInterval(intervalId);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (channel) {
+        try {
+          const supabase = createClient();
+          supabase.removeChannel(channel);
+        } catch {
+          // ignore cleanup error
+        }
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!state.message) return;
