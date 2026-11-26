@@ -52,7 +52,6 @@ import {
 } from "lucide-react";
 import {
   sendAdminEmail,
-  getReceivedEmails,
   markReceivedEmailAsRead,
   type SendAdminEmailState,
 } from "@/app/actions/admin-email";
@@ -329,29 +328,40 @@ export function AdminEmailsClient({ initialEmails, initialReceivedEmails = [], l
     setReceivedEmails(initialReceivedEmails);
   }, [initialReceivedEmails]);
 
-  // Auto-refresh inbound emails via Supabase Realtime + 15s visibility-aware polling
+  // Auto-refresh inbound emails via uncached API polling (every 5s) + Supabase Realtime
   useEffect(() => {
     let active = true;
 
     const refreshInbox = async () => {
       if (typeof document !== "undefined" && document.visibilityState !== "visible") return;
       try {
-        const latest = (await getReceivedEmails()) as ReceivedEmail[];
-        if (active && Array.isArray(latest)) {
-          setReceivedEmails(latest);
+        const res = await fetch("/api/admin/emails/inbox", {
+          method: "GET",
+          cache: "no-store",
+        });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (active && Array.isArray(json.emails)) {
+          setReceivedEmails(json.emails as ReceivedEmail[]);
         }
       } catch {
         // Ignore transient polling errors
       }
     };
 
-    const intervalId = setInterval(refreshInbox, 15000);
+    // Fetch immediately on mount and then every 5 seconds while tab is visible
+    void refreshInbox();
+    const intervalId = setInterval(refreshInbox, 5000);
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        refreshInbox();
+        void refreshInbox();
       }
     };
+    const handleFocus = () => {
+      void refreshInbox();
+    };
     document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
 
     let channel: ReturnType<ReturnType<typeof createClient>["channel"]> | null = null;
     try {
@@ -383,13 +393,14 @@ export function AdminEmailsClient({ initialEmails, initialReceivedEmails = [], l
         )
         .subscribe();
     } catch {
-      // Realtime optional; polling handles updates
+      // Realtime optional; 5s polling handles updates
     }
 
     return () => {
       active = false;
       clearInterval(intervalId);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
       if (channel) {
         try {
           const supabase = createClient();

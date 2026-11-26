@@ -3,6 +3,8 @@ import { getSentEmails, getReceivedEmails } from "@/app/actions/admin-email";
 import { AdminEmailsClient } from "./AdminEmailsClient";
 import type { SentEmail, ReceivedEmail } from "@/types/database";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Emails & Communications | Admin Console",
   description: "Compose outbound emails, manage incoming messages, and review communications.",
